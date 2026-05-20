@@ -31,7 +31,7 @@ function — no exceptions, no skipping violations to soften feedback.
 Input test:
 ```python
 def test_process(mocker):
-    mocker.patch("src.service.Validator.validate")
+    mocker.patch("src.service.Formatter.format")
     result = process_url("http://example.com")
     assert result != None
 ```
@@ -47,8 +47,8 @@ Output report:
   failure the output says `FAILED test_process` — this tells the reader
   nothing about what broke.
 - [Rule 2] No docstring. The business intent of this test is undocumented.
-- [Rule 6] `src.service.Validator` is an internal module. Mocking it makes
-  the validator dead code in this test — if Validator has a bug, this test
+- [Rule 6] `src.service.Formatter` is an internal module. Mocking it makes
+  the formatter dead code in this test — if Formatter has a bug, this test
   will not catch it.
 - [Additional: No Magic Values] `!= None` should be `is not None` (PEP 8;
   `!=` on None is ambiguous for objects with custom `__eq__`).

@@ -79,11 +79,11 @@ assert record.status == "PROCESSED"
 # GOOD
 HTTP_FORBIDDEN = 403
 MAX_RETRY_ATTEMPTS = 3
-from src.models import RecordStatus
+from src.orders import OrderStatus
 
 assert response.status_code == HTTP_FORBIDDEN
 assert result.retry_count == MAX_RETRY_ATTEMPTS
-assert record.status == RecordStatus.PROCESSED
+assert order.status == OrderStatus.COMPLETED
 ```
 
 Applies to: HTTP status codes, string enum values, numeric thresholds, timeout
@@ -156,25 +156,25 @@ contract, no test should break.
 
 ```python
 # BAD — calls a private method directly
-def test_normalizes_url_internally():
-    result = URLProcessor()._normalize("HTTP://Example.COM")
-    assert result == "http://example.com"
+def test_formats_address_internally():
+    result = OrderService()._format("123 main st")
+    assert result == "123 Main St"
 
 # BAD — asserts on an internal call chain
-def test_calls_cache_on_lookup(mocker):
-    mock_cache = mocker.patch("src.service.InternalCache")
-    MyService().get_user("usr_123")
-    mock_cache.get.assert_called_once_with("usr_123")  # tests the how, not the what
+def test_calls_queue_on_submit(mocker):
+    mock_queue = mocker.patch("src.service.InternalQueue")
+    NotificationService().send("usr_123")
+    mock_queue.push.assert_called_once_with("usr_123")  # tests the how, not the what
 
 # GOOD — tests observable output through the public method
-def test_returns_lowercased_url_when_mixed_case_input_is_given():
+def test_returns_formatted_address_when_lowercase_input_is_given():
     """
-    Given a URL with mixed-case scheme and host
+    Given an address with lowercase input
     When processed through the public interface
-    Then the returned URL is fully lowercased
+    Then the returned address is properly capitalised
     """
-    result = URLProcessor().process("HTTP://Example.COM/path")
-    assert result.url == "http://example.com/path"
+    result = OrderService().submit(address="123 main st")
+    assert result.address == "123 Main St"
 ```
 
 ---
@@ -201,27 +201,27 @@ internal modules, internal classes, or internal helpers.
 - Anything in `src/` that is not itself a thin I/O wrapper
 
 ```python
-# BAD — URLNormalizer is internal; this test is hollow
-def test_returns_scrape_result_for_valid_url(mocker):
-    mocker.patch("src.scraper.URLNormalizer.normalize",
-                 return_value="https://example.com")
-    result = Scraper().scrape("https://example.com")
+# BAD — AddressFormatter is internal; this test is hollow
+def test_returns_order_result_for_valid_address(mocker):
+    mocker.patch("src.orders.AddressFormatter.format",
+                 return_value="123 Main St")
+    result = OrderService().submit("123 main st")
     assert result is not None
 
 # GOOD — only the external HTTP call is mocked
-def test_returns_scraped_content_when_url_is_reachable(mocker):
+def test_returns_confirmation_when_order_is_submitted(mocker):
     """
-    Given a URL served by a reachable HTTP endpoint
-    When the scraper processes it
-    Then content is returned with SUCCESS status
+    Given a valid order payload
+    When the order is submitted
+    Then a confirmation is returned with SUBMITTED status
     """
     mocker.patch(
-        "src.scraper.httpx.AsyncClient.get",
-        return_value=MockResponse(status_code=HTTP_OK, content="<html>...")
+        "src.orders.httpx.AsyncClient.post",
+        return_value=MockResponse(status_code=HTTP_OK, content=b'{"id": "ord_1"}')
     )
-    result = Scraper().scrape("https://example.com")
-    assert result.status == ScraperStatus.SUCCESS
-    assert result.content is not None
+    result = OrderService().submit("123 Main St")
+    assert result.status == OrderStatus.SUBMITTED
+    assert result.order_id is not None
 ```
 
 **Boundary test:** Ask — *"If I remove this mock, does a real external system
