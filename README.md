@@ -30,6 +30,3 @@ cd ~/repos/agentic-skills
 agent tool directories detected on your machine). Safe to re-run — existing
 symlinks are updated, real directories are never overwritten.
 
-Personal skills (voice, career, interview prep) live separately in
-[mhihasan/exocortex](https://github.com/mhihasan/exocortex).
-Both repos install independently.
