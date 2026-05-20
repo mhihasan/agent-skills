@@ -201,7 +201,7 @@ What an engineer joining this system should know that isn't obvious from the dia
 - Patterns that work but show stress (long methods, deep inheritance, shared mutable state, missing tests on critical paths)
 - Integrations that are fragile (no retry, no timeout, no circuit breaker)
 
-Be specific. "`AnalysisDocumentBase.process_clusters()` is 340 lines and mixes I/O with scoring" is useful; "code quality could improve" is not.
+Be specific. "`OrderProcessor.handle_payment()` is 280 lines and mixes I/O with validation logic" is useful; "code quality could improve" is not.
 
 ### Section 11 — Open Questions and Items Needing Verification
 
