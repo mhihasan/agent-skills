@@ -15,6 +15,7 @@ Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
 | `design-doc-generator` | Generates production-grade architecture docs from a codebase |
 | `design-patterns-expert` | Alexander Shvets — *Dive Into Design Patterns* (2022) |
 | `pragmatic-engineer` | Thomas & Hunt — *The Pragmatic Programmer* (2019) |
+| `git-commit-craft` | Analyzes a branch and rewrites commit history using conventional commits |
 | `pytest-expert` | Opinionated pytest best practices for Python |
 | `system-designing` | Kleppmann & Riccomini — *Designing Data-Intensive Applications* (2nd ed.) |
 
