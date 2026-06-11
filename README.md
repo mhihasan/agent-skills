@@ -18,6 +18,7 @@ Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
 | `git-commit-craft` | Analyzes a branch and rewrites commit history using conventional commits |
 | `pytest-expert` | Opinionated pytest best practices for Python |
 | `system-designing` | Kleppmann & Riccomini — *Designing Data-Intensive Applications* (2nd ed.) |
+| `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
 
 ## Installation
 
