@@ -56,14 +56,29 @@ Build the open-questions list from three sources:
 
 Resolve them with AskUserQuestion (this is the brainstorming dialogue). Lead each option list with your recommendation, labeled "(Recommended)". If after honest review there are genuinely zero open questions, state that explicitly and continue.
 
-### 4. Present the plan in chat — REVIEW GATE
+### 4. Self-review the draft — before the developer sees it
+
+Before presenting anything, review your own draft against these criteria and fix any failures:
+
+| Check | Pass condition |
+|---|---|
+| No placeholders | Zero "TBD", "TODO", "similar to above", or "as needed" in the plan body |
+| Decisions are complete | Every open question from step 3 has a recorded answer with rationale |
+| Scope is tight | Nothing in the change list goes beyond what the ticket explicitly asks for |
+| Verification is concrete | Every command has an expected output, not just "run tests" |
+| Grounded in reality | Every file path and pattern reference was read in step 2 — no assumptions |
+| Out-of-scope is explicit | At least one item listed; "N/A" is only valid for trivial single-line tickets |
+
+If any check fails, fix the plan before proceeding. Do not present a draft you know has gaps — the developer's review is for judgment calls, not for catching incomplete work.
+
+### 5. Present the plan in chat — REVIEW GATE
 
 Present the full plan in chat and get explicit approval **before writing any file.** Cover:
 - Goal, key findings from exploration, the change list by file, any mapping table the ticket specifies (keys/values/identifiers/copy), the testing approach, and explicit out-of-scope items.
 
-If the user requests changes, revise and re-present. Only proceed to step 5 once they approve.
+If the user requests changes, revise and re-present. Only proceed to step 6 once they approve.
 
-### 5. Write the plan file beside the ticket
+### 6. Write the plan file beside the ticket
 
 - Write to `<ticket-dir>/PLAN-<KEY>.md`, where `<KEY>` is the ticket key (e.g. `PLAN-PROJ-1234.md`) and `<ticket-dir>` is the directory containing the source file.
 - If that file already exists, ask before overwriting.
@@ -85,6 +100,7 @@ Scale each section to the work; omit what doesn't apply.
 
 ## Red Flags — STOP
 
+- About to present the plan without self-reviewing it first → STOP. Run step 4 checks; fix failures before the developer sees the draft.
 - About to write the plan file without presenting it in chat → STOP. Present and get approval first.
 - Thinking "the user said write a file, so review doesn't apply" → STOP. "Write a plan" means a *reviewed* plan; the file is the last step.
 - Planning against an exploration summary you never opened → STOP. Read the files.
