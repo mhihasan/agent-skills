@@ -8,51 +8,46 @@ Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
 ## Agentic Coding Workflow
 
 These skills chain into a single feature-development pipeline — ticket in,
-reviewed code out. This section is the single source of truth for the flow;
-individual skills only reference their immediate neighbors, not the whole chain.
+reviewed code out.
 
+```mermaid
+flowchart TD
+    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef gate fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+
+    W(["[0] using-git-worktrees\nisolate workspace"]):::sp
+    FT["[1] fetching-tickets\nJira → TICKET-KEY.md · ✔ self-review"]:::pipe
+    PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md · ✔ self-review"]:::pipe
+    GT["[3] generating-tasks\nPLAN + Tasks section · ✔ self-review"]:::pipe
+    RP["[4] reviewing-plan\nAI-as-judge · fresh-context · strong model\nemits verdict marker"]:::judge
+    GATE{"verdict marker\nin PLAN file?"}:::gate
+    IT["[5] implementing-tasks\nTDD · pytest-expert / vitest-react\n↺ mid-task review gate"]:::pipe
+    RC["[6] reviewing-code\nAI-as-judge · fresh-context · strong model"]:::judge
+    CC["[6.5] crafting-commits\nclean history · ✔ self-review · human-gated"]:::pipe
+    FDB(["[7] finishing-a-development-branch\nprint merge/PR commands"]):::sp
+
+    W --> FT --> PFT --> GT --> RP
+    RP -->|PROCEED| GATE
+    RP -.->|"DO NOT PROCEED — fix plan"| GT
+    GATE -->|present| IT
+    GATE -.->|"missing — halt"| RP
+    IT --> RC
+    RC -->|PASS| CC --> FDB
+    RC -.->|"FAIL — fix code"| IT
 ```
-[0] using-git-worktrees ......... isolate before any code            (superpowers — front)
-        │
-[1] fetching-tickets ............ Jira → TICKET-KEY.md               (keep)
-        └─ self-review: AC present, images local, section order, blocking deps surfaced
-        │
-[2] planning-from-ticket ........ ticket → PLAN-KEY.md               (keep)
-        ├─ REQUIRED: superpowers:brainstorming        (already wired)
-        ├─ ADOPT:    superpowers:writing-plans rigor   (no placeholders, exact commands)
-        └─ self-review: no placeholders, decisions complete, scope tight, grounding verified
-        │
-[3] generating-tasks ............ plan → PLAN + "# Tasks"            (keep)
-        ├─ ADOPT:    superpowers:writing-plans bite-sized-task discipline
-        └─ self-review: AC coverage, behavioral tests, no orphan ACs, right-sized tasks
-        │
-[4] reviewing-plan .............. AI-as-judge verdict                 (keep — superior)
-        ├─ fresh-context subagent on a strong model (bias guardrail)
-        └─ emits verdict marker → PLAN file (implementing-tasks hard gate)
-        │
-[5] implementing-tasks .......... task spec → code via TDD            (wrap)
-        ├─ HARD GATE: plan must have reviewing-plan verdict marker before starting
-        ├─ REQUIRED: superpowers:test-driven-development  (Iron Law / cycle)
-        │            + pytest-expert | vitest-react        (per-project conventions)
-        ├─ ON RED-WRONG / ≥2 failed fixes: superpowers:systematic-debugging
-        ├─ ON independent multi-failures:  superpowers:dispatching-parallel-agents
-        ├─ BEFORE marking done:            superpowers:verification-before-completion
-        ├─ MID-TASK: superpowers:requesting-code-review before each next task
-        └─ ALT EXECUTION ENGINE:           superpowers:subagent-driven-development
-        │
-[6] reviewing-code .............. triage-first review                 (keep + layer)
-        ├─ fresh-context subagents on a strong model (bias guardrail)
-        ├─ ADOPT: superpowers:requesting-code-review  (BASE_SHA/HEAD_SHA diff convention)
-        └─ ADOPT: superpowers:receiving-code-review   (verify-before-fix, no performative agreement)
-        │
-[6.5] crafting-commits .......... clean conventional-commit history   (MANDATORY — human-gated)
-        ├─ self-review: file reconciliation, concern separation, script matches diff
-        └─ developer triggers the rewrite — no auto-commit
-        │
-[7] finishing-a-development-branch  advisory close-out               (superpowers — advisory only)
-        ├─ (1) verify tests green   (2) clean up worktree   (3) PRINT exact merge/PR commands
-        └─ developer runs all git writes; skill never commits/pushes/merges/PRs
-```
+
+> 🔵 pipeline steps · 🟡 AI-as-judge · 🟢 superpowers steps · dotted = fix & retry
+
+### Superpowers sub-skills
+
+| Step | Requires / adopts |
+|---|---|
+| [2] `planning-from-ticket` | REQUIRED: `superpowers:brainstorming` · ADOPT: `superpowers:writing-plans` rigor |
+| [3] `generating-tasks` | ADOPT: `superpowers:writing-plans` bite-sized-task discipline |
+| [5] `implementing-tasks` | REQUIRED: `superpowers:test-driven-development` + `pytest-expert` / `vitest-react` · `superpowers:systematic-debugging` on wrong-reason RED · `superpowers:dispatching-parallel-agents` on multi-failures · `superpowers:verification-before-completion` before marking done · `superpowers:requesting-code-review` mid-task |
+| [6] `reviewing-code` | ADOPT: `superpowers:requesting-code-review` (SHA convention) · `superpowers:receiving-code-review` (verify-before-fix) |
 
 | Skill | What it does |
 |---|---|
@@ -69,23 +64,17 @@ artifact already exists (e.g. run `reviewing-code` on any PR with no plan).
 
 ## Composes with superpowers
 
-This pipeline is the **spine** (artifact-centric, Jira-native, resumable). The
-[superpowers plugin](https://github.com/anthropics/claude-code) provides
-**cross-cutting discipline grafted onto it** at key points (see diagram above).
-
-| Layer | Owned by |
-|---|---|
-| Jira fetch, artifact files, plan review, triage-first code review | **this repo** |
-| TDD Iron Law, debugging, verification gate, git worktrees, commit history, close-out | **superpowers** |
+This pipeline is the **spine** — artifact-centric, Jira-native, resumable. The
+[superpowers plugin](https://claude.com/plugins/superpowers) provides cross-cutting
+discipline at key points (TDD Iron Law, debugging, verification, git worktrees, close-out).
 
 **The superpowers plugin is a required dependency for the full pipeline.**
-Steps [0], the `superpowers:*` sub-skills in [2]–[6], and [7] require it.
 
 Install in Claude Code:
 ```
 /plugin install superpowers@claude-plugins-official
 ```
-Or visit https://claude.com/plugins/superpowers. Then re-run `./install.sh` here.
+Then re-run `./install.sh` here.
 
 ### Review tiers
 
