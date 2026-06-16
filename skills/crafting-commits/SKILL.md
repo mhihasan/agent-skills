@@ -1,10 +1,10 @@
 ---
-name: git-commit-craft
+name: crafting-commits
 description: >
   Analyze a feature branch against a target branch, evaluate existing commit quality, and produce a clean conventional-commit history plan with a human-review step before any git commands run. Use this skill whenever the user wants to clean up commits, rewrite git history, apply conventional commits, squash messy commits, prepare a branch for PR review, or says things like "clean up my commits", "fix my commit history", "rewrite commits", "prepare commits for PR", "conventional commits", "squash and rewrite", "tidy my branch", or "commits are a mess". Also trigger when a user shares a diff or branch and asks how to structure commits for a reviewer.
 ---
 
-# git-commit-craft
+# crafting-commits
 
 Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR. Outputs a human-readable plan (markdown) for approval before touching anything.
 
