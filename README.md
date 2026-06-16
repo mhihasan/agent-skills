@@ -4,11 +4,39 @@
 [![Last commit](https://img.shields.io/github/last-commit/mhihasan/coding-agent-skills)](https://github.com/mhihasan/coding-agent-skills/commits/main)
 [![Stars](https://img.shields.io/github/stars/mhihasan/coding-agent-skills?style=social)](https://github.com/mhihasan/coding-agent-skills/stargazers)
 
-**Production-grade skills for AI coding agents** — a full Jira-to-PR pipeline with self-review gates at every artifact boundary and AI-as-judge before you ship.
+**Skills for AI coding agents** — a full Jira-to-PR pipeline with self-review gates at every artifact boundary and an independent AI-as-judge before you ship.
 
 > *Review early, review often.* A finding caught after one task costs one task to fix. A finding caught after five can invalidate all five.
 
-Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`. Book-grounded, employer-neutral, drop-in for any project.
+Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
+
+## Use cases
+
+**Agentic workflow**
+- Pull a Jira ticket, plan it, generate TDD tasks, implement, review, and open a PR — without leaving the agent
+- Enter the pipeline at any step — if you already have a plan file, skip straight to implementation
+
+**Code review**
+- Review a branch before opening a PR — parallel AI judges, domain-filtered diff, triage-first report with BLOCKER/SHOULD-FIX/NIT severity
+- Review any existing PR or diff without needing a plan file
+
+**Planning & design**
+- Turn a ticket or spec into a structured implementation plan with scope, risks, and breaking changes surfaced upfront
+- Block implementation until the plan passes an AI-as-judge gate — never implement a flawed design
+- Generate an architecture design doc from an existing codebase
+
+**Implementation**
+- Execute TDD tasks one by one — auto-selects pytest or Vitest, enforces the TDD Iron Law (no code before a failing test)
+- Dispatch parallel agents on multi-failure test runs instead of fixing one failure at a time
+
+**Craft coaching**
+- Architecture review — Dependency Rule violations, boundary placement, Clean Architecture compliance
+- DDD modeling — identify Aggregates, Bounded Contexts, and Ubiquitous Language gaps in a codebase
+- System design Q&A — grounded in DDIA; covers replication, sharding, consistency, stream processing
+- Code quality critique — Clean Code and Pragmatic Programmer lens on functions, naming, error handling
+
+**Commit hygiene**
+- Rewrite a messy branch history into clean conventional commits — human-gated before anything is pushed
 
 ## Quickstart
 
@@ -26,9 +54,9 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 
 ```bash
 # 1. Install dependencies
-/plugin install superpowers@claude-plugins-official   # in Claude Code
-git clone git@github.com:mhihasan/coding-agent-skills.git ~/.claude/skills/coding-agent-skills
-cd ~/.claude/skills/coding-agent-skills && ./install.sh
+/plugin install superpowers@claude-plugins-official       # in Claude Code
+/plugin marketplace add mhihasan/coding-agent-skills      # in Claude Code
+/plugin install coding-agent-skills@coding-agent-skills   # in Claude Code
 
 # 2. Pull a ticket
 /fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
@@ -181,13 +209,20 @@ Standalone, book-grounded skills usable on their own or within the workflow abov
 
 ## Installation
 
+**Option A — Claude Code plugin (recommended):**
+
+```shell
+/plugin marketplace add mhihasan/coding-agent-skills
+/plugin install coding-agent-skills@coding-agent-skills
+```
+
+**Option B — manual symlink (OpenCode, Cursor, any tool reading `~/.claude/skills/`):**
+
 ```bash
 git clone git@github.com:mhihasan/coding-agent-skills.git
 cd coding-agent-skills
 ./install.sh
 ```
 
-`install.sh` symlinks all skills into `~/.claude/skills/` (and any other
-agent tool directories detected on your machine). Safe to re-run — existing
-symlinks are updated, real directories are never overwritten.
+`install.sh` symlinks all skills into `~/.claude/skills/`. Safe to re-run — existing symlinks are updated, real directories are never overwritten.
 
