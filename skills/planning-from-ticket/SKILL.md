@@ -16,6 +16,8 @@ You are a thin orchestrator. You own the read → explore → decide → review 
 
 **REQUIRED SUB-SKILL:** Use superpowers:brainstorming for the clarifying-question and design-proposal dialogue. Do not re-implement that conversation here — invoke it for the thinking, and use this skill for the ticket-specific workflow and the file output.
 
+**ADOPT:** Apply superpowers:writing-plans rigor to the PLAN body — no "TBD"/"TODO"/"similar to above" placeholders, exact file paths, and verification commands with expected output.
+
 ## When to Use
 
 - The user gives a path to a ticket/spec markdown file and asks for a plan.

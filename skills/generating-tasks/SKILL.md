@@ -44,6 +44,7 @@ Do not modify the plan's existing content above your tasks — that belongs to w
 - **Suggestions beyond the plan** — allowed, but clearly marked as suggestions; the developer decides.
 - **Scope** — respect the plan's boundaries. Push back if the conversation drifts out of scope.
 - **Project conventions over assumptions** — read CLAUDE.md (if present) and scan existing test/source files to learn real paths, naming, and test framework. Never hardcode a directory layout; derive it from the project.
+- **ADOPT:** Follow superpowers:writing-plans bite-sized-task discipline — each task step is one concrete action with complete code (no placeholders, no "similar to above"), an exact run command, and the expected output. A task spec that leaves any step as TBD is not done.
 
 ## Conversation Flow
 

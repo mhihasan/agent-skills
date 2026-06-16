@@ -41,6 +41,19 @@ echo "────────────────────────�
 # ── RULES     (add later) ────────────────────────────────────────────────────
 # ── SUBAGENTS (add later) ────────────────────────────────────────────────────
 
+# ── DEPENDENCY CHECK ─────────────────────────────────────────────────────────
+
+SUPERPOWERS_DIR="$HOME/.claude/plugins/cache/claude-plugins-official/superpowers"
+if [ ! -d "$SUPERPOWERS_DIR" ]; then
+  echo ""
+  echo "WARNING: superpowers plugin not found at $SUPERPOWERS_DIR"
+  echo "  This workflow composes superpowers skills at several pipeline steps:"
+  echo "  test-driven-development, systematic-debugging, verification-before-completion,"
+  echo "  using-git-worktrees, dispatching-parallel-agents, finishing-a-development-branch."
+  echo "  Install the superpowers plugin to unlock the full pipeline:"
+  echo "  https://www.anthropic.com/claude-code  (Plugins > superpowers)"
+fi
+
 echo ""
 echo "Note: agentic-skills contains engineering craft skills only."
 echo "For personal skills (voice, career, interview prep), also install:"

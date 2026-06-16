@@ -8,6 +8,8 @@ description: >
 
 Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR. Outputs a human-readable plan (markdown) for approval before touching anything.
 
+**No auto-commit:** This skill proposes the rewritten history and prints the exact git commands. The developer reviews and runs all git operations — this skill never self-initiates `git commit`, `git reset`, `git push`, or `git merge`. The human-review gate in Step 5 is mandatory and cannot be skipped.
+
 ---
 
 ## Workflow

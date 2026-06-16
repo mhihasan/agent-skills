@@ -33,6 +33,7 @@ Create a TodoWrite item per step.
 
 - Confirm a git repo (`git rev-parse --is-inside-work-tree`). PR mode: `gh` installed + authed. Branch mode: branch exists. Diff mode: file exists.
 - Detect default branch: `git remote show origin`, else `git branch -l main master`, else `main`.
+- **ADOPT:** `superpowers:requesting-code-review`'s SHA convention — capture `HEAD_SHA` (`git rev-parse HEAD`) and `BASE_SHA` (`git merge-base HEAD origin/<base>`) to bound the review diff precisely. Reference these SHAs in the report so re-review agents target the exact same diff.
 - **Diff size:** >3000 lines → warn about token cost, offer to scope. >8000 → strongly recommend scoping / batching.
 - If a check fails, stop and report. Don't proceed on empty/invalid data.
 
@@ -145,6 +146,15 @@ Sections: **Metadata** (mode, target, date, stack, checks run/skipped, files/lin
 ## Re-review Protocol
 
 When the developer says findings are addressed: load the original report, build a verification checklist from its must-fix/should-fix items, re-read ONLY the files that had findings (don't re-run clean checks), mark each ✅ Resolved / ⚠️ Partial / ❌ Still present, check for regressions in those files, and emit a **delta report** (not a full new one) with an updated verdict.
+
+**ADOPT:** `superpowers:receiving-code-review` discipline for acting on findings — verify each finding against codebase reality before fixing, push back with technical reasoning when a finding is wrong (cite the relevant code), and never emit performative agreement ("you're absolutely right", "great catch"). Accept only findings that hold up under scrutiny.
+
+## Next Steps
+
+Once the verdict is PASS (or PASS WITH FINDINGS the developer accepts):
+
+1. The developer manually runs `crafting-commits` to rewrite the branch into a clean conventional-commit history. This is human-gated — `crafting-commits` proposes and prints commands; the developer runs them.
+2. Then `finishing-a-development-branch` may be used **only** to present merge/PR/keep/discard options, print the exact git commands, and clean up a worktree. It must not commit, push, merge, or open a PR on its own initiative — the developer runs all git writes.
 
 ## You Must NOT
 
