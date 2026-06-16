@@ -16,7 +16,7 @@ jobs:
 
       - name: Extract release notes from CHANGELOG.md
         id: changelog
-        run: python scripts/extract-changelog.py "${GITHUB_REF#refs/tags/v}"
+        run: python .github/scripts/extract-changelog.py "${GITHUB_REF#refs/tags/v}"
 
       - uses: softprops/action-gh-release@v2
         with:
