@@ -5,20 +5,15 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     name: Create GitHub release
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
-
-      - name: Extract release notes from CHANGELOG.md
-        id: changelog
-        run: python .github/scripts/extract-changelog.py "${GITHUB_REF#refs/tags/v}"
-
       - uses: softprops/action-gh-release@v2
         with:
-          body_path: release-notes.txt
           generate_release_notes: false
