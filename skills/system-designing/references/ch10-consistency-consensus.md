@@ -239,6 +239,7 @@ Understanding their equivalence is the key theoretical insight of this chapter.
 ### Formal Consensus Properties
 
 Any correct consensus algorithm must satisfy:
+
 | Property | Definition |
 |----------|-----------|
 | **Uniform agreement** | No two nodes decide different values |

@@ -195,6 +195,7 @@ graph LR
 ```
 
 **Conflict resolution strategies**:
+
 | Strategy | Description | Risk |
 |----------|-------------|------|
 | Last-write-wins (LWW) | Higher timestamp wins | Data loss — concurrent writes may be lost |
