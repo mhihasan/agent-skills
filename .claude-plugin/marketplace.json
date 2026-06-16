@@ -1,0 +1,18 @@
+{
+  "name": "coding-agent-skills",
+  "owner": {
+    "name": "Hasanul Islam",
+    "email": "hasanuli10@gmail.com"
+  },
+  "description": "Skills for coding agents: software craft and agentic dev workflow.",
+  "plugins": [
+    {
+      "name": "coding-agent-skills",
+      "source": ".",
+      "description": "Skills for coding agents: software craft (clean architecture, DDD, design patterns, pragmatic engineering) and an agentic dev workflow (ticket fetching, planning, task generation, TDD implementation, and code review).",
+      "homepage": "https://github.com/mhihasan/coding-agent-skills",
+      "repository": "https://github.com/mhihasan/coding-agent-skills",
+      "license": "MIT"
+    }
+  ]
+}
