@@ -1,0 +1,18 @@
+[output]
+quiet = false
+verbose = true
+
+[options]
+# Skip placeholder and auth-required URLs
+exclude = [
+  "https://yoursite\\.atlassian\\.net",
+  "https://id\\.atlassian\\.com",
+  "http://localhost",
+  "https://example\\.com",
+  "https://grafana\\.internal",
+]
+
+exclude_path = ["local-dev"]
+
+# GitHub rate-limits unauthenticated requests — accept 429 as non-failure
+accept = [429]
