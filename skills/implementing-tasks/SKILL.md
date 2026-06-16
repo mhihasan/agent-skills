@@ -169,13 +169,20 @@ Once every test scenario from the task spec has been through the RED → GREEN �
 4. **Summarize what was done:** which testing skill was used, files created, files modified, all tests passing.
 5. Let the developer know the task is ready for review.
 
-**Next step:** suggest the developer run `reviewing-code` on the implementation when they're ready — but the review is their call to make, not yours to invoke.
+**Mid-task review gate (optional but recommended for multi-task plans):** after each task passes, invoke `superpowers:requesting-code-review` before starting the next task. Act on its findings using `superpowers:receiving-code-review` — verify each finding against codebase reality before fixing, push back with technical reasoning on findings that don't hold up. Critical findings block the next task; lower-severity findings are the developer's call.
+
+**Next step:** once all tasks are done, suggest the developer run `reviewing-code` for the final end-to-end review — but the review is their call to make, not yours to invoke.
 
 ## Alternative Execution Engine
 
-For a plan with many independent tasks, the developer may drive the entire `# Tasks` section with `superpowers:subagent-driven-development` instead — it dispatches a fresh subagent per task with a two-stage spec+quality review. The `PLAN-*.md` task format maps directly onto its per-task dispatch.
+For a plan with many independent tasks, the developer may drive the entire `# Tasks` section with one of two superpowers modes instead of this skill:
 
-**Override:** when composing `subagent-driven-development`, disable its per-task commit step. Subagents implement and test only; the developer commits later.
+- **`superpowers:subagent-driven-development`** — dispatches a fresh subagent per task with a two-stage review (spec compliance, then code quality). Best when tasks are fully independent and you want maximum parallelism.
+- **`superpowers:executing-plans`** — batch execution with human checkpoints between batches. Best when you want to stay in the loop at natural breakpoints rather than delegating everything to subagents.
+
+The `PLAN-*.md` task format maps directly onto both modes.
+
+**Override for both modes:** disable the per-task commit step. Subagents implement and test only; the developer commits later.
 
 ## No Auto-Commit
 
