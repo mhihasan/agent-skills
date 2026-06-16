@@ -18,6 +18,15 @@ jobs:
       - run: pip install pyyaml
       - run: python .github/scripts/validate-frontmatter.py
 
+  validate-plugin:
+    name: Validate plugin manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - run: claude plugin validate .
+
   lint-markdown:
     name: Lint markdown
     runs-on: ubuntu-latest
