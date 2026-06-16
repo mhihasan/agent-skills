@@ -1,9 +1,58 @@
 # coding-agent-skills
 
-Generic engineering craft skills for AI coding assistants.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/mhihasan/coding-agent-skills)](https://github.com/mhihasan/coding-agent-skills/commits/main)
+[![Stars](https://img.shields.io/github/stars/mhihasan/coding-agent-skills?style=social)](https://github.com/mhihasan/coding-agent-skills/stargazers)
 
-Book-grounded, employer-neutral, and reusable by any engineer. Works with
-Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
+**Production-grade skills for AI coding agents** — a full Jira-to-PR pipeline with self-review gates at every artifact boundary and AI-as-judge before you ship.
+
+> *Review early, review often.* A finding caught after one task costs one task to fix. A finding caught after five can invalidate all five.
+
+Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`. Book-grounded, employer-neutral, drop-in for any project.
+
+## Quickstart
+
+**Option A — review any branch right now (zero setup):**
+
+```
+/reviewing-code branch
+```
+
+Point it at your current branch. It dispatches parallel AI judges, filters the diff by domain, and produces a triage-first report. No plan file needed.
+
+---
+
+**Option B — full pipeline from a Jira ticket:**
+
+```bash
+# 1. Install dependencies
+/plugin install superpowers@claude-plugins-official   # in Claude Code
+git clone git@github.com:mhihasan/coding-agent-skills.git ~/.claude/skills/coding-agent-skills
+cd ~/.claude/skills/coding-agent-skills && ./install.sh
+
+# 2. Pull a ticket
+/fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
+
+# 3. Plan it
+/planning-from-ticket tickets/PROJ-123/PROJ-123.md
+
+# 4. Generate TDD tasks
+/generating-tasks tickets/PROJ-123/PLAN-PROJ-123.md
+
+# 5. Judge the plan (AI-as-judge — blocks implementation if findings are blockers)
+/reviewing-plan tickets/PROJ-123/PLAN-PROJ-123.md
+
+# 6. Implement (refuses to start without a PROCEED verdict marker)
+/implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto
+
+# 7. Review the code
+/reviewing-code branch
+
+# 8. Clean up commits
+/crafting-commits
+```
+
+Each step is independently usable — enter at any point if the upstream artifact already exists.
 
 ## Agentic Coding Workflow
 
@@ -133,8 +182,8 @@ Standalone, book-grounded skills usable on their own or within the workflow abov
 ## Installation
 
 ```bash
-git clone git@github.com:mhihasan/agent-skills.git
-cd agent-skills
+git clone git@github.com:mhihasan/coding-agent-skills.git
+cd coding-agent-skills
 ./install.sh
 ```
 
