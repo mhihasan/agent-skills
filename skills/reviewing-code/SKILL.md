@@ -14,7 +14,7 @@ You are NOT autonomous — the developer confirms scope. You do NOT write or fix
 
 ## Two Entry Modes
 
-- **Pipeline mode** — the user points you at a plan/spec file (any `PLAN*.md`, ticket, or spec the developer provides). You verify the implementation against that plan AND run quality checks. **Task Completion Verification is always included.** Make no assumption about which tool produced the plan or what ran before you — the plan file is the source of truth.
+- **Pipeline mode** — the user points you at a plan/spec file (any `PLAN*.md`, ticket, or spec the developer provides). You verify the implementation against that plan AND run quality checks. **Task Completion Verification is always included.** If a ticket file exists alongside the plan (e.g. `tickets/PROJ-123/PROJ-123.md`), read it too — acceptance criteria and context in the ticket take precedence over any summary in the plan. Make no assumption about which tool produced the plan or what ran before you — the plan and ticket files are the sources of truth.
 - **General mode** — no plan. A standard review of a PR, branch, staged changes, or a diff file.
 
 | Sub-mode | Target | Gather diff |
@@ -39,7 +39,7 @@ Create a TodoWrite item per step.
 
 ### 2. Read the changeset (silently)
 
-- **Pipeline:** read the plan file (requirements, decisions, task spec, scope boundaries).
+- **Pipeline:** read the plan file (requirements, decisions, task spec, scope boundaries). Then check for a ticket file beside the plan (same directory, e.g. `PROJ-123.md`) — if found, read it in full. The ticket is the ground truth for acceptance criteria; the plan may omit or reframe details.
 - **General:** gather the diff. PR mode — read title/body (stated intent) and commit messages (progression) to tell intentional patterns from bugs.
 - Note the nature of the work (feature / refactor / infra / docs / bugfix).
 
@@ -78,7 +78,7 @@ From what you read, propose which checks to **Run** and which to **Skip**, each 
 
 Single message, multiple Agent calls. Each agent receives:
 - **Filtered diff** — only files in its domain (React agent gets `.tsx/.jsx/.css`; DB agent gets query/model/migration files; security gets routes/middleware). Never the whole diff to every agent.
-- The relevant **check definition** (from the reference file), the **severity scale**, the **false-positive rules**, **CLAUDE.md** if present, and — pipeline mode — the plan/task content. PR general mode — the intent summary.
+- The relevant **check definition** (from the reference file), the **severity scale**, the **false-positive rules**, **CLAUDE.md** if present, and — pipeline mode — the plan/task content and ticket file (if found). PR general mode — the intent summary.
 - For language checks that call for it, the **2-Level Tracing Protocol** (below).
 
 **Fresh-context + strong model.** Each agent is dispatched with ONLY the inputs listed above — no prior conversation, no memory. Each judge is independently unanchored to the producer's framing (self-preference bias guardrail). Dispatch with a **strong model** (e.g. `claude-opus-4-8`) for maximum judgment quality. Model routing is applied at the dispatch, not pinned in brittle frontmatter.

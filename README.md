@@ -177,7 +177,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 
 | | |
 |---|---|
-| **Input** | Branch name, PR number, staged diff, or diff file; optionally a plan/spec file for pipeline context |
+| **Input** | Branch name, PR number, staged diff, or diff file; optionally a plan/spec file for pipeline context (ticket file read automatically if found beside the plan) |
 | **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
 | **Auto mode** | Supported, skips triage confirmation and proceeds directly to review |
 | **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
