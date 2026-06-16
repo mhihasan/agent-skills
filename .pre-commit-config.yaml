@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.44.0
+    hooks:
+      - id: markdownlint
+        args: ["--config", ".markdownlint.json"]
+        exclude: ^local-dev/
+
+  - repo: local
+    hooks:
+      - id: validate-frontmatter
+        name: Validate SKILL.md frontmatter
+        language: python
+        entry: python .github/scripts/validate-frontmatter.py
+        pass_filenames: false
+        additional_dependencies: [pyyaml]
+
+      - id: validate-plugin
+        name: Validate Claude plugin manifest
+        language: system
+        entry: claude plugin validate .
+        pass_filenames: false
