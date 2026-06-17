@@ -42,6 +42,19 @@ flowchart TD
     HG3 --> CC
 ```
 
+## Design Principles
+
+**Review early, review often.** A flaw surfaced before coding costs nothing. The same flaw after five tasks can invalidate all five.
+
+**Two review tiers, split by role.** Self-review handles mechanical checks — cheap, always runs, catches placeholders and format issues. AI-as-judge handles subjective quality calls — fresh context, targeted, catches design and scope problems. Neither replaces the other.
+
+**Human gates are not optional.** Every AI verdict requires your approval before the next step starts. `REVIEW-LOG.md` is the audit trail.
+
+**No self-preference bias.** Judge subagents run in a fresh context with no access to the producing session's framing or justifications.
+
+**Auto mode removes pauses, not safeguards.** Git boundaries and judge halts are invariants in both modes. `auto` is a workflow speed setting, not a bypass.
+
+**Enter at any step.** Every skill is independently usable. The pipeline is resumable, not monolithic — start wherever the upstream artifact already exists.
 
 ## Use cases
 
