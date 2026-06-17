@@ -84,6 +84,19 @@ If no signal fires, run only ALWAYS + JUDGMENT. Most small plans need no expert 
 
 Create a TodoWrite item per step.
 
+### -1. Preflight — check upstream gate
+
+Before dispatching the judge, locate `REVIEW-LOG.md` in the same directory as the plan file and check for a `generating-tasks` stamp:
+
+```bash
+grep "Human Review:.*generating-tasks" <plan-dir>/REVIEW-LOG.md
+```
+
+- **Line absent (or file missing):** halt immediately with:
+  > "This step requires a human review stamp from `generating-tasks`. Run `/generating-tasks` first and approve the tasks before reviewing the plan."
+- **Line present with `AUTO`:** note — "Note: upstream `generating-tasks` was AI-conducted in auto mode" — then continue.
+- **Line present with `APPROVED`:** proceed normally.
+
 ### 0. Dispatch the judgment as a fresh-context subagent
 
 **Bias guardrail.** When this skill runs in the same session that produced the plan, the judging model inherits the producer's framing and justifications — the strongest form of self-preference bias (Chip Huyen, *AI Engineering*). Neutralize this by dispatching the rubric run as a **fresh-context subagent via the Agent tool.**
@@ -121,6 +134,26 @@ When this skill runs in a fresh session with no prior context, dispatching a sub
      > **Plan Review:** DO NOT PROCEED — YYYY-MM-DD
      ```
    - Use the actual date. Use the exact format — `implementing-tasks` checks for the prefix `> **Plan Review:** PROCEED`. Do not edit any other line.
+
+**Human Review Gate (after AI verdict):**
+
+**Collaborative mode (default):** After emitting the structured verdict (step 7) and offering to append the Plan Review verdict marker, open the human gate:
+
+> "Review the plan verdict above. Type `approve` to stamp it and unlock implementing-tasks, or describe what needs fixing."
+
+Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`:
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — reviewing-plan
+```
+Then tell the developer: `Stamped REVIEW-LOG.md. Next: /implementing-tasks <plan-file>`
+
+If the verdict is DO NOT PROCEED, do not offer the human gate — direct the developer to `receiving-plan-review` first.
+
+**Auto mode:** If the verdict is PROCEED or PROCEED WITH CHANGES, write the stamp automatically:
+```
+> **Human Review:** AUTO — YYYY-MM-DD — reviewing-plan
+```
+If the verdict is DO NOT PROCEED, do not write a stamp — halt and invoke `receiving-plan-review`.
 
 ## Severity Scale
 
