@@ -31,7 +31,7 @@ Accepts one required argument. Detect the source type:
 |---|---|---|
 | Jira URL | `https://site.atlassian.net/browse/PROJ-42` | Extract key → invoke `fetching-tickets` skill |
 | Jira key | `PROJ-42` | Invoke `fetching-tickets` skill |
-| Local file | `./local-dev/tickets/PROJ-42/PROJ-42.md` | Read file directly — no fetch |
+| Local file | `./$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md` | Read file directly — no fetch |
 | Anything else | `"add password reset"` | **STOP — reject immediately** |
 
 **When input is unrecognized, say exactly this and do nothing else:**
@@ -50,11 +50,37 @@ When input is a Jira URL or key:
 
 **REQUIRED:** Invoke the `fetching-tickets` skill. Do not call Jira APIs directly (no MCP calls, no curl). `fetching-tickets` owns all Jira fetch logic — custom field discovery, image download, self-review. Do not re-implement it here.
 
-Once `fetching-tickets` completes, the ticket is at `local-dev/tickets/PROJ-42/PROJ-42.md`.
+Once `fetching-tickets` completes, the ticket is at `$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`.
 
 ## Workspace Setup
 
 After the ticket is on disk (fetched or read from local file), set up the branch. This is **required** — do not skip it, do not hand off to `planning-from-ticket` before completing it.
+
+### 0. Resolve artifacts root
+
+Check for `.claude/artifacts-root` in the project root:
+
+```bash
+cat .claude/artifacts-root 2>/dev/null
+```
+
+- **If the file exists:** use its value as `ARTIFACTS_ROOT` for all path construction this run (e.g. `local-dev/tickets`).
+- **If the file does not exist:** ask the developer:
+
+  > "Where should ticket and plan files go? Press Enter for the default.
+  > Default: `local-dev/tickets`"
+
+  Write their answer (or the default) to `.claude/artifacts-root`:
+
+  ```bash
+  echo "local-dev/tickets" > .claude/artifacts-root   # or their chosen value
+  ```
+
+  Then tell them:
+  > "Saved to `.claude/artifacts-root`. Commit this file to share the setting with your team, or add it to `.gitignore` to keep it local:
+  > ```bash
+  > echo '.claude/artifacts-root' >> .gitignore
+  > ```"
 
 **One-time setup (first run only):** Ensure `local-dev/` is excluded from git globally so ticket and plan files are never accidentally committed to any project.
 
@@ -148,9 +174,9 @@ Once the branch (or worktree) is ready, print exactly this and stop:
 
 ```
 Branch `feat/PROJ-42/add-user-auth` ready (based off `develop`).
-Ticket saved to `local-dev/tickets/PROJ-42/PROJ-42.md`.
+Ticket saved to `$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`.
 
-Next: /planning-from-ticket local-dev/tickets/PROJ-42/PROJ-42.md
+Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md
 ```
 
 No push commands. No extra guidance. No reminders.
