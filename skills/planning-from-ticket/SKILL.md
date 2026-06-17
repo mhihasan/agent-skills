@@ -111,7 +111,7 @@ After writing the plan file, open the Review Gate.
 **Collaborative mode (default):** The plan was already presented and approved in step 5 — that approval is the gate. Write (or upsert) this line in `<ticket-dir>/REVIEW-LOG.md`:
 
 ```
-Human Review: APPROVED — YYYY-MM-DD — planning-from-ticket
+> **Human Review:** APPROVED — YYYY-MM-DD — planning-from-ticket
 ```
 
 Then tell the developer: `Plan written to <path>. Next: /generating-tasks <path>`
@@ -119,7 +119,7 @@ Then tell the developer: `Plan written to <path>. Next: /generating-tasks <path>
 **Auto mode:** Write the stamp automatically with `AUTO`:
 
 ```
-Human Review: AUTO — YYYY-MM-DD — planning-from-ticket
+> **Human Review:** AUTO — YYYY-MM-DD — planning-from-ticket
 ```
 
 ## Plan File Structure
