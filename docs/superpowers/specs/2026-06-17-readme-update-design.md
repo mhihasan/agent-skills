@@ -89,18 +89,18 @@ flowchart TD
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
 
-    ST(["① fetch ticket\ncreate branch"]):::sp
-    PFT["② explore codebase\nwrite PLAN-KEY.md"]:::pipe
-    GT["③ break plan into\nTDD-ready tasks"]:::pipe
-    HG1{{"✋ you review tasks\nbefore AI judges the plan"}}:::gate
-    RP{"④ AI judges the plan\nfresh context · strong model"}:::judge
-    RPR["verify findings\nfix plan"]:::pipe
-    HG2{{"✋ you review AI verdict\nbefore implementation starts"}}:::gate
-    IT["⑤ implement task by task\nTDD · RED → GREEN → REFACTOR\nAI self-reviews between tasks"]:::pipe
-    RC{"⑥ AI reviews the code\nfresh context · strong model"}:::judge
-    RCR["verify findings\nfix code"]:::sp
-    HG3{{"✋ you review AI verdict\nbefore committing"}}:::gate
-    CC(["⑦ rewrite history into\nclean conventional commits"]):::sp
+    ST(["① pick up ticket\nset up a branch"]):::sp
+    PFT["② read the codebase\nwrite an implementation plan"]:::pipe
+    GT["③ break the plan into\nsmall testable tasks"]:::pipe
+    HG1{{"✋ review the tasks"}}:::gate
+    RP{"④ AI reviews the plan\nbefore any code is written"}:::judge
+    RPR["challenge or accept each finding\nupdate the plan"]:::pipe
+    HG2{{"✋ review the plan verdict\nthen start coding"}}:::gate
+    IT["⑤ write tests first, then code\ntask by task"]:::pipe
+    RC{"⑥ AI reviews the code\nindependent of who wrote it"}:::judge
+    RCR["challenge or accept each finding\nfix the code"]:::sp
+    HG3{{"✋ review the code verdict\nthen commit"}}:::gate
+    CC(["⑦ clean up the commit history\nready to merge"]):::sp
 
     ST --> PFT --> GT --> HG1 --> RP
     RP -->|PROCEED| HG2
