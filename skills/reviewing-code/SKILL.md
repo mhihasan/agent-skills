@@ -176,6 +176,8 @@ Check the arguments for `auto`; **collaborative is the default.**
 
 **Invariant in both modes:** read-only — never write or fix code; the developer acts on findings.
 
+**`auto` invariants:** Read-only — no self-commit, no self-push. Halt on FAIL verdict (invoke `superpowers:receiving-code-review`). Ask on unresolvable ambiguity.
+
 ## You Must NOT
 
 - Write or modify any code — read-only. Flag findings; don't fix them.

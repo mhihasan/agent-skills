@@ -12,6 +12,8 @@ Analyzes changes on a feature branch, evaluates the semantic quality of existing
 
 **Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it in chat, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate.
 
+**`auto` invariants:** No self-commit (the bash script is presented, not executed). No self-push. Halt if the branch cannot be analyzed (e.g., merge conflicts). Ask on unresolvable ambiguity.
+
 ---
 
 ## Input Validation

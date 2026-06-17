@@ -53,6 +53,8 @@ Check the arguments for `auto`; **collaborative is the default.**
 - **Collaborative (default):** pause until the developer agrees on the test plan (step 2), then on the full spec (step 3), before appending.
 - **Auto:** draft the test plan → self-review → append, with no forward-progress pauses. Stop only on genuine ambiguity you can't resolve from the plan + codebase. The self-review (step 3.5) still runs, and `reviewing-plan` is the downstream judge. Auto never edits the plan's existing content — it only appends.
 
+**`auto` invariants:** No self-commit. No self-push. Halt on self-review BLOCKER before appending tasks. Ask on unresolvable ambiguity.
+
 ## Conversation Flow
 
 A natural progression — not a rigid pipeline. Let the conversation go where it needs to.
