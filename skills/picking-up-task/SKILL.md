@@ -172,16 +172,38 @@ Use `--worktree` when you have in-flight work on another branch, are dispatching
 
 ## Handoff
 
-Once the branch (or worktree) is ready, print exactly this and stop:
+Once the branch (or worktree) is ready, print the ticket summary and open the Review Gate.
+
+### Review Gate
+
+Present to the developer:
 
 ```
 Branch `feat/PROJ-42/add-user-auth` ready (based off `develop`).
 Ticket saved to `$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`.
 
-Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md
+Review the ticket file above to confirm its content is correct before planning starts.
+Type `approve` to stamp it and proceed, or describe what needs fixing.
 ```
 
-No push commands. No extra guidance. No reminders.
+**Collaborative mode (default):** Wait for the developer to type `approve`. Any other response is a change request — address it and re-present. On `approve`:
+
+1. Write (or upsert) this line in `$ARTIFACTS_ROOT/PROJ-42/REVIEW-LOG.md` (create the file if absent, overwrite any existing `picking-up-task` line if present):
+   ```
+   > **Human Review:** APPROVED — YYYY-MM-DD — picking-up-task
+   ```
+2. Print:
+   ```
+   Stamped REVIEW-LOG.md. Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md
+   ```
+
+**Auto mode:** Write the stamp automatically with `AUTO`:
+```
+> **Human Review:** AUTO — YYYY-MM-DD — picking-up-task
+```
+Then print: `Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`
+
+No push commands. No extra guidance beyond the next-step line.
 
 ## You Must NOT
 
