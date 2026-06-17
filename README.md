@@ -90,32 +90,29 @@ Safe to re-run: existing symlinks are updated, real directories are never overwr
 **Option A: full pipeline from a Jira ticket**
 
 ```bash
-# 1. Install the superpowers plugin (required dependency)
-/plugin install superpowers@claude-plugins-official
-
-# 2. Start the task (fetch ticket + set up branch)
+# 1. Start the task (fetch ticket + set up branch)
 /picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
 
-# 3. Plan it
+# 2. Plan it
 /planning-from-ticket local-dev/tickets/PROJ-123/PROJ-123.md
 
-# 4. Generate TDD tasks
+# 3. Generate TDD tasks
 /generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
 
-# 5. Judge the plan (AI-as-judge, blocks implementation if findings are blockers)
+# 4. Judge the plan (AI-as-judge, blocks implementation if findings are blockers)
 /reviewing-plan local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
 
-# 6. Implement (refuses to start without a PROCEED verdict marker)
+# 5. Implement (refuses to start without a PROCEED verdict marker)
 /implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md auto
 
-# 7. Review the code
+# 6. Review the code
 /reviewing-code branch local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
 
-# 8. Address findings (if any)
+# 7. Address findings (if any)
 # superpowers:receiving-code-review  — verify each finding, push back on wrong ones, fix genuine ones
 # then re-run /reviewing-code to confirm all findings resolved
 
-# 9. Clean up commits
+# 8. Clean up commits
 /crafting-commits
 # presents plan in chat → confirm → executes
 ```
