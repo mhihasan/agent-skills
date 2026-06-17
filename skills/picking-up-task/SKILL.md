@@ -1,5 +1,5 @@
 ---
-name: start-task
+name: picking-up-task
 description: Use when the user wants to start a new task — accepts a Jira ticket URL, Jira key, or local ticket file path. Triggers on "start task", "begin PROJ-42", "set up a branch for", "start working on PROJ-42". Do not trigger automatically.
 model: inherit
 color: cyan
@@ -20,8 +20,7 @@ Bootstrap a new task: fetch the ticket (if remote) and set up a clean branch —
 [4] reviewing-plan
 [5] implementing-tasks
 [6] reviewing-code
-[6.5] crafting-commits
-[7] finishing-a-development-branch
+[7] crafting-commits
 ```
 
 ## Input Detection
@@ -115,7 +114,7 @@ Wait for confirmation.
 git checkout -b feat/PROJ-42/add-user-auth
 ```
 
-**No push.** Branch stays local. `finishing-a-development-branch` handles push and PR.
+**No push.** Branch stays local. `superpowers:finishing-a-development-branch` handles push and PR.
 
 ### `--worktree` flag
 
@@ -149,7 +148,7 @@ No push commands. No extra guidance. No reminders.
 - **Create a Jira ticket.** That is not in scope. The developer must provide an existing ticket or file.
 - **Call Jira APIs directly.** Delegate to `fetching-tickets`. No MCP Atlassian calls, no curl to Jira REST.
 - **Proceed past a dirty working tree without explicit confirmation.** Informing the developer that worktrees are isolated is not the same as getting confirmation — ask and wait.
-- **Push the branch.** That is `finishing-a-development-branch`'s job.
+- **Push the branch.** That is `superpowers:finishing-a-development-branch`'s job.
 - **Trigger automatically.** This skill is opt-in only.
 
 ## Common Mistakes
@@ -160,4 +159,4 @@ No push commands. No extra guidance. No reminders.
 | Accepting "add password reset" as input | Reject immediately with the exact wording above. No creative workarounds. |
 | Calling `mcp__claude_ai_Atlassian__getJiraIssue` directly | Invoke `fetching-tickets` skill instead. |
 | Reassuring developer about worktree isolation, then proceeding | Get explicit "go ahead" before any git operation on a dirty tree. |
-| Pushing the new branch | Don't. `finishing-a-development-branch` handles it. |
+| Pushing the new branch | Don't. `superpowers:finishing-a-development-branch` handles it. |
