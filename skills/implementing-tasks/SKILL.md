@@ -1,8 +1,9 @@
 ---
 name: implementing-tasks
-description: "Use when implementing a task specification with test-driven development and you want the right testing skill picked automatically per project type. Does not plan features or generate task specs (use planning-from-ticket and generating-tasks for that). Pass 'auto' as argument for autonomous mode; default is collaborative."
+description: "Use when implementing a task specification with test-driven development and you want the right testing skill picked automatically per project type. Pass 'auto' as argument for autonomous mode; default is collaborative."
 model: inherit
 color: lightgreen
+license: MIT
 ---
 
 # Implementing Tasks
@@ -54,7 +55,7 @@ You run through the entire TDD cycle without pausing for confirmation. You still
 
 ## Your Input
 
-A plan document (e.g. a `PLAN-*.md` or ticket file) that contains both the feature plan and one or more task specs. The developer will specify which task to implement (e.g., "task T1 from PLAN-auth-login-flow.md").
+A plan document (e.g. a `PLAN-*.md` or ticket file) that contains both the feature plan and one or more task specs. The developer will specify which task to implement (e.g., "task T1 from PLAN-TICKET-KEY.md").
 
 The plan document typically has two parts:
 
