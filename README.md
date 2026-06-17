@@ -34,9 +34,19 @@ Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/ski
 **Commit hygiene**
 - Rewrite a messy branch history into clean conventional commits, human-gated before anything is pushed
 
+## Installation
+
+```bash
+git clone git@github.com:mhihasan/coding-agent-skills.git
+cd coding-agent-skills
+./install.sh
+```
+
+`install.sh` symlinks all skills into `~/.claude/skills/`. Safe to re-run: existing symlinks are updated, real directories are never overwritten.
+
 ## Quickstart
 
-**Option A: review any branch right now (zero setup)**
+**Option A: review any branch right now**
 
 ```
 /reviewing-code branch
@@ -49,10 +59,8 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 **Option B: full pipeline from a Jira ticket**
 
 ```bash
-# 1. Install dependencies
-/plugin install superpowers@claude-plugins-official       # in Claude Code
-/plugin marketplace add mhihasan/coding-agent-skills      # in Claude Code
-/plugin install coding-agent-skills@coding-agent-skills   # in Claude Code
+# 1. Install the superpowers plugin (required dependency)
+/plugin install superpowers@claude-plugins-official
 
 # 2. Pull a ticket
 /fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
@@ -322,22 +330,3 @@ Standalone, book-grounded skills usable on their own or within the workflow abov
 | `system-designing` | Kleppmann & Riccomini, *Designing Data-Intensive Applications* (2nd ed.) |
 | `pytest-expert` | Opinionated pytest best practices for Python |
 | `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
-
-## Installation
-
-**Option A: Claude Code plugin (recommended)**
-
-```shell
-/plugin marketplace add mhihasan/coding-agent-skills
-/plugin install coding-agent-skills@coding-agent-skills
-```
-
-**Option B: manual symlink (OpenCode, Cursor, any tool reading `~/.claude/skills/`)**
-
-```bash
-git clone git@github.com:mhihasan/coding-agent-skills.git
-cd coding-agent-skills
-./install.sh
-```
-
-`install.sh` symlinks all skills into `~/.claude/skills/`. Safe to re-run: existing symlinks are updated, real directories are never overwritten.
