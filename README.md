@@ -4,7 +4,41 @@
 
 > *Review early, review often.* A flaw surfaced before coding costs nothing. The same flaw surfaced after five tasks can invalidate all five.
 
-Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
+Works with Claude Code, OpenCode, Cursor, and GitHub Copilot.
+
+## Agentic Coding Workflow
+
+Ticket in, reviewed code out.
+
+```mermaid
+flowchart TD
+    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef gate fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+
+    W(["[0] using-git-worktrees\nisolate workspace"]):::sp
+    FT["[1] fetching-tickets\nJira → TICKET-KEY.md · ✔ self-review"]:::pipe
+    PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md · ✔ self-review"]:::pipe
+    GT["[3] generating-tasks\nPLAN + Tasks section · ✔ self-review"]:::pipe
+    RP["[4] reviewing-plan\nAI-as-judge · fresh-context · strong model\nemits verdict marker"]:::judge
+    GATE{"verdict marker\nin PLAN file?"}:::gate
+    IT["[5] implementing-tasks\nTDD · pytest-expert / vitest-react\n↺ mid-task review gate"]:::pipe
+    RC["[6] reviewing-code\nAI-as-judge · fresh-context · strong model"]:::judge
+    CC["[6.5] crafting-commits\nclean history · ✔ self-review · human-gated"]:::pipe
+    FDB(["[7] finishing-a-development-branch\nprint merge/PR commands"]):::sp
+
+    W --> FT --> PFT --> GT --> RP
+    RP -->|PROCEED| GATE
+    RP -.->|"DO NOT PROCEED — fix plan"| GT
+    GATE -->|present| IT
+    GATE -.->|"missing — halt"| RP
+    IT --> RC
+    RC -->|PASS| CC --> FDB
+    RC -.->|"FAIL — fix code"| IT
+```
+
+> 🔵 pipeline steps · 🟡 AI-as-judge · 🟢 superpowers steps · dotted = fix & retry
 
 ## Use cases
 
@@ -87,10 +121,17 @@ Point it at your current branch. It dispatches parallel AI judges, filters the d
 /implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto
 
 # 7. Review the code
-/reviewing-code branch
+/reviewing-code branch tickets/PROJ-123/PLAN-PROJ-123.md
 
-# 8. Clean up commits
+# 8. Address findings (if any)
+# superpowers:receiving-code-review  — verify each finding, push back on wrong ones, fix genuine ones
+# then re-run /reviewing-code to confirm all findings resolved
+
+# 9. Clean up commits
 /crafting-commits
+
+# 10. Finish
+# superpowers:finishing-a-development-branch — merge, PR, or discard
 ```
 
 Each step is independently usable. Enter at any point if the upstream artifact already exists.
@@ -205,6 +246,15 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 /reviewing-code branch tickets/PROJ-123/PLAN-PROJ-123.md          # pipeline mode with plan context
 ```
 
+**If the verdict is FAIL or findings need addressing:**
+
+1. Use `superpowers:receiving-code-review` to work through the findings:
+   - Verify each finding against the actual code before accepting it
+   - Push back with technical reasoning if a finding is wrong
+   - Fix only findings that hold up under scrutiny
+2. Re-run `/reviewing-code` — it produces a delta report against the original, not a full re-review
+3. Once verdict is PASS, continue to `crafting-commits`
+
 ---
 
 ### `crafting-commits`
@@ -241,40 +291,6 @@ Every pipeline skill accepts an optional `auto` argument. **Collaborative is the
 `auto` removes conversational pauses but does not remove safeguards. Git boundaries and judge halts are invariants in both modes.
 
 **`auto` does not chain skills.** Even in auto mode, each skill is a discrete command. `/fetching-tickets auto` fetches the ticket and stops. You decide when to invoke the next step.
-
-## Agentic Coding Workflow
-
-These skills chain into a single feature-development pipeline: ticket in, reviewed code out.
-
-```mermaid
-flowchart TD
-    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
-    classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
-    classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
-    classDef gate fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
-
-    W(["[0] using-git-worktrees\nisolate workspace"]):::sp
-    FT["[1] fetching-tickets\nJira → TICKET-KEY.md · ✔ self-review"]:::pipe
-    PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md · ✔ self-review"]:::pipe
-    GT["[3] generating-tasks\nPLAN + Tasks section · ✔ self-review"]:::pipe
-    RP["[4] reviewing-plan\nAI-as-judge · fresh-context · strong model\nemits verdict marker"]:::judge
-    GATE{"verdict marker\nin PLAN file?"}:::gate
-    IT["[5] implementing-tasks\nTDD · pytest-expert / vitest-react\n↺ mid-task review gate"]:::pipe
-    RC["[6] reviewing-code\nAI-as-judge · fresh-context · strong model"]:::judge
-    CC["[6.5] crafting-commits\nclean history · ✔ self-review · human-gated"]:::pipe
-    FDB(["[7] finishing-a-development-branch\nprint merge/PR commands"]):::sp
-
-    W --> FT --> PFT --> GT --> RP
-    RP -->|PROCEED| GATE
-    RP -.->|"DO NOT PROCEED — fix plan"| GT
-    GATE -->|present| IT
-    GATE -.->|"missing — halt"| RP
-    IT --> RC
-    RC -->|PASS| CC --> FDB
-    RC -.->|"FAIL — fix code"| IT
-```
-
-> 🔵 pipeline steps · 🟡 AI-as-judge · 🟢 superpowers steps · dotted = fix & retry
 
 ## Composes with superpowers
 
