@@ -217,7 +217,7 @@ If any step fails (merge conflict, wrong file state, etc.), stop immediately and
 
 After successful execution, say:
 
-> "Commits are clean. Run `superpowers:finishing-a-development-branch` when you're ready to merge, open a PR, or discard the branch."
+> "Commits are clean. Run `superpowers:finishing-a-development-branch` when you're ready to merge, open a PR, or discard the branch. If opening a PR, always create it as a draft (`gh pr create --draft`)."
 
 ---
 
