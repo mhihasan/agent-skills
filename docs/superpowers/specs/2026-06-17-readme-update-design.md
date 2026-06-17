@@ -95,11 +95,11 @@ flowchart TD
     HG1{{"✋ you approve the tasks\nor ask to revise them"}}:::gate
     RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
     RPR["challenge or accept each finding\nupdate the plan\n/receiving-plan-review"]:::pipe
-    HG2{{"✋ review the plan verdict\nthen start coding"}}:::gate
+    HG2{{"✋ you approve the plan\nor ask to revise it"}}:::gate
     IT["⑤ write tests first, then code\ntask by task\n/implementing-tasks"]:::pipe
     RC{"⑥ AI reviews the code\nindependent of who wrote it\n/reviewing-code"}:::judge
     RCR["challenge or accept each finding\nfix the code\nsuperpowers:receiving-code-review"]:::sp
-    HG3{{"✋ review the code verdict\nthen commit"}}:::gate
+    HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
     CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
 
     ST --> PFT --> GT --> HG1 --> RP
