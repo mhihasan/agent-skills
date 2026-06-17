@@ -130,6 +130,14 @@ When you first receive a task to implement:
    This matches both `PROCEED` and `PROCEED WITH CHANGES` verdicts. DO NOT start if the only verdict line is `> **Plan Review:** DO NOT PROCEED`. If no verdict marker exists:
    - **Collaborative mode:** ask the developer to confirm a PROCEED verdict exists, or ask them to run `reviewing-plan` first. Do not start implementation on an unjudged plan.
    - **Auto mode:** refuse to start — there is no human to confirm, and an unjudged plan is a BLOCKER. Report that `reviewing-plan` must run first and emit its verdict marker.
+1b. **Check the human review gate.** Look for a `reviewing-plan` stamp in `REVIEW-LOG.md` (same directory as the plan file):
+   ```bash
+   grep "Human Review:.*reviewing-plan" <plan-dir>/REVIEW-LOG.md
+   ```
+   - **Absent (or file missing):** halt:
+     > "This step requires a human review stamp from `reviewing-plan`. Approve the plan review before starting implementation."
+   - **AUTO stamp:** note — "Note: upstream `reviewing-plan` was AI-conducted in auto mode" — then continue.
+   - **APPROVED stamp:** proceed normally.
 2. **Read CLAUDE.md** (if it exists) and **scan the relevant source code and test files** mentioned in the task spec to understand current state, patterns, and conventions.
 3. **Detect the project type and invoke the matching testing skill** (see "Testing Skill Selection" above).
 4. **Update the task's status** to `in progress` in the plan document.
@@ -179,6 +187,28 @@ Once every test scenario from the task spec has been through the RED → GREEN �
 **Mid-task review gate:** if there is a next task, invoke `superpowers:requesting-code-review` before starting it. Act on its findings using `superpowers:receiving-code-review` — verify each finding against codebase reality before fixing, push back with technical reasoning on findings that don't hold up. Critical findings block the next task; lower-severity findings are the developer's call.
 
 **Next step:** once all tasks are done, suggest the developer run `reviewing-code` for the final end-to-end review — but the review is their call to make, not yours to invoke.
+
+## Per-Task Review Gate
+
+After all tests for a task pass and before moving to the next task, open the Review Gate for that task.
+
+**Collaborative mode (default):**
+
+> "All tests for Task T<n> pass. Review the implementation above. Type `approve` to stamp it and move to the next task, or describe what needs fixing."
+
+Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`:
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — implementing-tasks-T<n>
+```
+(Replace `<n>` with the task number, e.g. `implementing-tasks-T1`.)
+
+**Auto mode:** Write the stamp automatically:
+```
+> **Human Review:** AUTO — YYYY-MM-DD — implementing-tasks-T<n>
+```
+Then continue to the next task.
+
+**After the final task:** tell the developer: `All tasks complete. Next: /reviewing-code`
 
 ## Alternative Execution Engine
 
