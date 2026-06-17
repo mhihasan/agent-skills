@@ -16,8 +16,9 @@ The current README has accurate content but is organized for someone who already
 
 1. Make the README work for both audiences: new engineer (first impression) and existing user (reference).
 2. Surface design principles early so the flowchart is immediately legible.
-3. Update the diagram to show human review gates as first-class pipeline nodes.
-4. Update the skills reference to document what each skill checks and writes.
+3. Add a plain English walkthrough of the pipeline *before* the Mermaid diagram so the reader has a mental model before they see the flowchart.
+4. Update the diagram to show human review gates as first-class pipeline nodes.
+5. Update the skills reference to document what each skill checks and writes.
 
 ---
 
@@ -33,7 +34,9 @@ The current README has accurate content but is organized for someone who already
 
 ```
 1. Title + tagline + quote          (unchanged)
-2. Agentic Coding Workflow          (flowchart — updated)
+2. Agentic Coding Workflow
+   2a. Plain English walkthrough     (NEW — 3 short paragraphs before the diagram)
+   2b. Mermaid flowchart             (updated — human gate nodes added)
 3. Design Principles                (NEW)
 4. Use Cases                        (unchanged, moved before installation)
 5. Installation                     (unchanged)
@@ -46,6 +49,24 @@ The current README has accurate content but is organized for someone who already
    → Recommended model tiers
 10. Book Skills                     (unchanged)
 ```
+
+---
+
+## Section: Plain English Pipeline Walkthrough (new, before the diagram)
+
+Add a short prose walkthrough immediately before the Mermaid diagram. It should read like someone explaining the pipeline out loud — what happens at each step, where the gates are, and what the two types of review are. Roughly 8–10 sentences. No bullet lists — flowing paragraphs.
+
+Example draft:
+
+> You start by fetching a Jira ticket and setting up a branch. From there, you plan the work — the AI explores the codebase, surfaces decisions, and writes a structured plan file. Once the plan has tasks attached, a **human review gate** asks you to approve the tasks before any AI judging starts.
+>
+> The plan then goes to an AI judge running in a fresh context — no memory of how the plan was written, no self-preference bias. If the judge says PROCEED, another human gate asks you to confirm before implementation starts. If it says DO NOT PROCEED, you work through the findings first.
+>
+> Implementation runs task by task via TDD. After each task, a human gate asks you to approve before the next one starts. When all tasks are done, the code goes to a second AI judge — same fresh-context, same independence guarantee. A final human gate sits between the PASS verdict and committing.
+>
+> Two types of review run throughout: **self-review** (cheap, mechanical, always on — catches placeholders and format issues) and **AI-as-judge** (targeted, subjective, fresh context — catches design and scope problems). Human gates tie them together.
+
+This is a draft — the implementer should write the final version in their own voice, keeping it to 3 short paragraphs.
 
 ---
 
