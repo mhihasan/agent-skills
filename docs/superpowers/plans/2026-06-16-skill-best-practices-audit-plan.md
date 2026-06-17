@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Edit only `skills/<name>/SKILL.md` files — do not touch `references/` content, `install.sh`, or `book-skills/`
+- Edit only `skills/<name>/SKILL.md` files and `README.md` — do not touch `references/` content, `install.sh`, or `book-skills/`
 - All frontmatter must be valid YAML (no unquoted colons in description values)
 - Descriptions must remain under ~200 words
 - Preserve all existing skill body logic — fix structure/style only, never remove workflow steps
@@ -537,6 +537,76 @@ git commit -m "fix(generating-tasks,picking-up-task): remove scope-delimiting cl
 
 ---
 
+---
+
+## Task 12: Migrate all artifact paths to `local-dev/tickets/`
+
+**Files:**
+- Modify: `skills/picking-up-task/SKILL.md`
+- Modify: `skills/fetching-tickets/SKILL.md`
+- Modify: `skills/planning-from-ticket/SKILL.md`
+- Modify: `skills/generating-tasks/SKILL.md`
+- Modify: `skills/reviewing-plan/SKILL.md`
+- Modify: `skills/implementing-tasks/SKILL.md`
+- Modify: `README.md`
+
+**Canonical paths after this task:**
+- Ticket file: `local-dev/tickets/TICKET-KEY/TICKET-KEY.md`
+- Plan file: `local-dev/tickets/TICKET-KEY/PLAN-TICKET-KEY.md`
+- Images subdirectory: `local-dev/tickets/TICKET-KEY/images/`
+
+**Interfaces:**
+- All six skills reference the same root — `local-dev/tickets/` — no skill uses `tickets/` bare anymore
+- `picking-up-task` adds a one-time setup step to ensure `local-dev/` is in the developer's global gitignore
+
+- [ ] **Step 1: Read all six skill files and README**
+
+Read each file in full to find every occurrence of the old path patterns:
+- `tickets/TICKET-KEY/` or `tickets/PROJ-123/` or `tickets/PROJ-42/`
+- Any bare `tickets/` root reference
+
+- [ ] **Step 2: Global find-and-replace in each skill file**
+
+For each skill file, replace:
+- `tickets/` → `local-dev/tickets/` (all occurrences, including example paths like `tickets/PROJ-123/PROJ-123.md`)
+
+Verify no bare `tickets/` remains after replacement.
+
+- [ ] **Step 3: Add global gitignore setup step to `picking-up-task`**
+
+In the "Workspace setup" section of `picking-up-task`, add a one-time check before the branch creation steps:
+
+```markdown
+**One-time setup (first run only):** Ensure `local-dev/` is excluded from git globally so ticket and plan files are never accidentally committed to any project.
+
+Check whether `local-dev` is already in the global gitignore:
+```bash
+grep -q 'local-dev' "$(git config --global core.excludesfile 2>/dev/null || echo ~/.gitignore_global)" 2>/dev/null \
+  && echo "already excluded" \
+  || echo "local-dev/" >> "${$(git config --global core.excludesfile):-~/.gitignore_global}"
+```
+If the global excludes file does not exist yet, create it:
+```bash
+echo "local-dev/" >> ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+```
+```
+
+- [ ] **Step 4: Update README quickstart paths**
+
+In the README quickstart section, replace all example paths:
+- `tickets/PROJ-123/PROJ-123.md` → `local-dev/tickets/PROJ-123/PROJ-123.md`
+- `tickets/PROJ-123/PLAN-PROJ-123.md` → `local-dev/tickets/PROJ-123/PLAN-PROJ-123.md`
+
+- [ ] **Step 5: Commit all files**
+
+```bash
+git add skills/picking-up-task/SKILL.md skills/fetching-tickets/SKILL.md skills/planning-from-ticket/SKILL.md skills/generating-tasks/SKILL.md skills/reviewing-plan/SKILL.md skills/implementing-tasks/SKILL.md README.md
+git commit -m "feat(pipeline): migrate artifact root from tickets/ to local-dev/tickets/ and add global gitignore setup"
+```
+
+---
+
 ## Self-Review
 
 **Spec coverage:**
@@ -549,12 +619,13 @@ git commit -m "fix(generating-tasks,picking-up-task): remove scope-delimiting cl
 - S4 self-review gate (generating-design-doc + planning-from-ticket) → Tasks 3, 5 ✓
 - S5 reviewing-code report gate → Task 6 ✓
 - S6 auto mode invariants (5 skills) → Task 7 ✓
-- S7 implementing-tasks canonical name → Task 8 ✓
+- S7 implementing-tasks canonical name → Task 8 ✓ (will be superseded by Task 12 path migration)
 - N1 color/license (8 skills) → Tasks 3, 4, 5, 8, 9 ✓ (all covered)
 - N2 description NITs (3 skills) → Tasks 8, 11 ✓
 - N3 body opener NITs (5 skills) → Task 10 ✓
 - N4 generating-design-doc "When to use" section → Task 3 ✓
 - N5 picking-up-task "Do not trigger automatically" → Task 11 ✓
+- Artifact path migration (6 skills + README) → Task 12 ✓
 
 **Placeholder scan:** No TBDs, all steps contain specific instructions, all git commands are concrete.
 
