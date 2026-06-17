@@ -104,10 +104,10 @@ Each skill is independently usable — enter at any point if the upstream artifa
 **Option B: review any branch right now**
 
 ```
-/reviewing-code branch
+/reviewing-code
 ```
 
-Point it at your current branch. It dispatches parallel AI judges, filters the diff by domain, and produces a triage-first report. No plan file needed.
+Reviews your staged diff by default, or pass `branch`, a PR number, or a diff file. Dispatches parallel AI judges, filters the diff by domain, and produces a triage-first report. No plan file needed.
 
 ## Skills Reference
 
@@ -239,13 +239,14 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 
 | | |
 |---|---|
-| **Input** | Branch name, PR number, staged diff, or diff file; optionally a plan/spec file for pipeline context (ticket file read automatically if found beside the plan) |
+| **Input** | Branch name, PR number, staged diff, or diff file — defaults to staged diff if no target given; optionally a plan/spec file for pipeline context (ticket file read automatically if found beside the plan) |
 | **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
 | **Auto mode** | Supported, skips triage confirmation and proceeds directly to review; on FAIL automatically invokes `superpowers:receiving-code-review`, fixes findings, and re-runs review |
 | **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
 | **Writes** | `reviewing-code` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
+/reviewing-code                                                    # review staged diff (default)
 /reviewing-code branch                                             # review current branch against main
 /reviewing-code PR-456                                             # review a specific PR
 /reviewing-code branch local-dev/tickets/PROJ-123/PLAN-PROJ-123.md          # pipeline mode with plan context
