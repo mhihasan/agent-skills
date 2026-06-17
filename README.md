@@ -18,13 +18,13 @@ flowchart TD
     classDef gate fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
 
     ST(["[1] start-task\nJira URL/key or local file → branch"]):::sp
-    PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md · ✔ self-review"]:::pipe
-    GT["[3] generating-tasks\nPLAN + Tasks section · ✔ self-review"]:::pipe
+    PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md"]:::pipe
+    GT["[3] generating-tasks\nPLAN + Tasks section"]:::pipe
     RP["[4] reviewing-plan\nAI-as-judge · fresh-context · strong model\nemits verdict marker"]:::judge
     GATE{"verdict marker\nin PLAN file?"}:::gate
     IT["[5] implementing-tasks\nTDD · pytest-expert / vitest-react\n↺ mid-task review gate"]:::pipe
     RC["[6] reviewing-code\nAI-as-judge · fresh-context · strong model"]:::judge
-    CC["[6.5] crafting-commits\nclean history · ✔ self-review · human-gated"]:::pipe
+    CC["[6.5] crafting-commits\nclean history · human-gated"]:::pipe
     FDB(["[7] finishing-a-development-branch\nprint merge/PR commands"]):::sp
 
     ST --> PFT --> GT --> RP
