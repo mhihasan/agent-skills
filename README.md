@@ -1,14 +1,12 @@
 # coding-agent-skills
 
-**Skills for AI coding agents.** A full Jira-to-PR pipeline with self-review gates at every artifact boundary and an independent AI-as-judge before you ship.
+Skills for AI coding agents. A Jira-to-PR pipeline with self-review gates at every artifact boundary and an independent AI judge before you ship.
 
-> *Review early, review often.* A flaw surfaced before coding costs nothing. The same flaw surfaced after five tasks can invalidate all five.
+> *Review early, review often.* A flaw surfaced before coding costs nothing. The same flaw after five tasks can invalidate all five.
 
 Works with Claude Code, OpenCode, Cursor, and GitHub Copilot.
 
 ## Agentic Coding Workflow
-
-Ticket in, reviewed code out.
 
 ```mermaid
 flowchart TD
@@ -44,25 +42,25 @@ flowchart TD
 
 ## Design Principles
 
-**Review early, review often.** A flaw surfaced before coding costs nothing. The same flaw after five tasks can invalidate all five.
+**Review early, review often.** A flaw before coding costs nothing. The same flaw after five tasks can invalidate all five.
 
-**Two review tiers, split by role.** Self-review handles mechanical checks — cheap, always runs, catches placeholders and format issues. AI-as-judge handles subjective quality calls — fresh context, targeted, catches design and scope problems. Neither replaces the other.
+**Two review tiers, split by role.** Self-review handles mechanical checks: cheap, always runs, catches placeholders and format issues. AI-as-judge handles subjective quality calls: fresh context, targeted, catches design and scope problems. Neither replaces the other.
 
 **Human gates are not optional.** Every AI verdict requires your approval before the next step starts. `REVIEW-LOG.md` is the audit trail.
 
 **No self-preference bias.** Judge subagents run in a fresh context with no access to the producing session's framing or justifications.
 
-**Auto mode removes pauses, not safeguards.** Git boundaries and judge halts are invariants in both modes. `auto` is a workflow speed setting, not a bypass.
+**Auto mode removes pauses, not safeguards.** Git boundaries and judge halts hold in both modes. `auto` is a speed setting, not a bypass.
 
-**Enter at any step.** Every skill is independently usable. The pipeline is resumable, not monolithic — start wherever the upstream artifact already exists.
+**Enter at any step.** Every skill is independently usable. Start wherever the upstream artifact already exists.
 
 ## Use cases
 
 **Full pipeline** — ticket in, reviewed code out. Enter at any step if the upstream artifact already exists.
 
-**Standalone review** — review any branch or PR without a plan file: domain-filtered diff, triage-first report with BLOCKER / SHOULD-FIX / NIT severity.
+**Standalone review** — review any branch or PR without a plan file. Domain-filtered diff, triage-first report with BLOCKER / SHOULD-FIX / NIT severity.
 
-**Architecture docs** — generate a production-grade design document from an existing codebase.
+**Architecture docs** — generate a design document from an existing codebase.
 
 **Craft coaching** — book-grounded skills for architecture review (Clean Architecture), DDD modeling, system design Q&A (DDIA), and code quality critique (Clean Code, Pragmatic Programmer).
 
@@ -133,7 +131,7 @@ Fetches a Jira ticket (or reads a local file) and sets up a git branch — the s
 
 ### `planning-from-ticket`
 
-Turns a local ticket file into a structured implementation plan. Explores the codebase, surfaces decisions, and writes a `PLAN-<KEY>.md` beside the ticket.
+Reads a local ticket file, explores the codebase, surfaces decisions, and writes a `PLAN-<KEY>.md` beside the ticket.
 
 | | |
 |---|---|
@@ -188,9 +186,9 @@ AI-as-judge that evaluates the plan + tasks against the ticket before any code i
 **If the verdict is DO NOT PROCEED (collaborative mode):**
 
 1. Use `receiving-plan-review` to work through the findings:
-   - Verify each finding against the ticket ACs and codebase before accepting it
+   - Verify each finding against the ticket and codebase before accepting it
    - Push back with evidence if a finding is wrong
-   - Fix only findings that hold up under scrutiny
+   - Fix only what holds up under scrutiny
 2. Re-run `/reviewing-plan` — fresh verdict against the updated plan
 3. Once verdict is PROCEED, continue to `implementing-tasks`
 
@@ -198,7 +196,7 @@ AI-as-judge that evaluates the plan + tasks against the ticket before any code i
 
 ### `receiving-plan-review`
 
-Works through `reviewing-plan` findings with technical rigor. Verifies each finding against the ticket and codebase before accepting it — pushes back on wrong findings, fixes genuine ones.
+Works through `reviewing-plan` findings. Verifies each one against the ticket and codebase before accepting it — pushes back on wrong findings, fixes genuine ones.
 
 | | |
 |---|---|
@@ -256,8 +254,8 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 
 1. Use `superpowers:receiving-code-review` to work through the findings:
    - Verify each finding against the actual code before accepting it
-   - Push back with technical reasoning if a finding is wrong
-   - Fix only findings that hold up under scrutiny
+   - Push back with reasoning if a finding is wrong
+   - Fix only what holds up under scrutiny
 2. Re-run `/reviewing-code` — it produces a delta report against the original, not a full re-review
 3. Once verdict is PASS, continue to `crafting-commits`
 
@@ -301,11 +299,11 @@ Every pipeline skill accepts an optional `auto` argument. **Collaborative is the
 
 ## Composes with superpowers
 
-This pipeline is the **spine**: artifact-centric, Jira-native, resumable. The
-[superpowers plugin](https://claude.com/plugins/superpowers) provides cross-cutting
-discipline at key points (TDD Iron Law, debugging, verification, git worktrees, close-out).
+This pipeline is artifact-centric, Jira-native, and resumable. The
+[superpowers plugin](https://claude.com/plugins/superpowers) adds cross-cutting
+discipline at key points: TDD Iron Law, debugging, verification, git worktrees, close-out.
 
-**The superpowers plugin is a required dependency for the full pipeline.**
+**The superpowers plugin is required for the full pipeline.**
 
 Install in Claude Code:
 
@@ -317,14 +315,12 @@ Then re-run `./install.sh` here.
 
 ### Review tiers
 
-The pipeline uses two complementary review layers, split to avoid self-preference bias:
-
 | Tier | Who | Scope | When |
 |---|---|---|---|
 | **Self-review** | The producing skill checks its own output | Objective, mechanical checks only (placeholders, file coverage, format): verifiable yes/no | Every artifact boundary; runs in both modes |
 | **AI-as-judge** | Independent fresh-context subagent on a strong model | Subjective quality calls (scope, over-engineering, breaking changes, design) with BLOCKER/SHOULD-FIX/NIT severity gate | `reviewing-plan` (before code) · `reviewing-code` (after code) |
 
-Self-review is cheap and always runs. AI-as-judge is expensive and targeted. The split exists because a producer judging its own subjective quality is the strongest failure mode in AI evaluation (self-preference bias).
+Self-review is cheap and always runs. AI-as-judge is targeted. The split exists because a producer evaluating its own subjective quality is the primary failure mode in AI evaluation.
 
 ### Superpowers sub-skills
 
@@ -338,7 +334,7 @@ Self-review is cheap and always runs. AI-as-judge is expensive and targeted. The
 
 ### Recommended model tiers
 
-Skills keep `model: inherit` (honoring your session model). Judge subagents are dispatched with a strong model at dispatch time, not pinned in brittle frontmatter.
+Skills use `model: inherit` (your session model). Judge subagents are dispatched with a strong model at dispatch time, not pinned in frontmatter.
 
 | Step | Role | Recommended tier |
 |---|---|---|
@@ -350,7 +346,7 @@ Skills keep `model: inherit` (honoring your session model). Judge subagents are 
 
 ## Book Skills
 
-Standalone coaching skills in `book-skills/`. Each is grounded in a specific book and usable independently — invoke them for architecture review, DDD coaching, design critique, and system design Q&A.
+Standalone coaching skills in `book-skills/`. Each is grounded in a specific book — use them for architecture review, DDD coaching, design critique, and system design Q&A.
 
 Install manually by symlinking from `book-skills/` into `~/.claude/skills/`.
 
