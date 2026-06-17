@@ -124,7 +124,7 @@ Then pick up the next test and repeat.
 
 When you first receive a task to implement:
 
-0. **Workspace isolation** — In auto mode, always invoke `superpowers:using-git-worktrees` before writing the first test — agents run unattended and isolation is non-negotiable. In collaborative mode, `start-task` will have already set up the branch or worktree; skip this step unless the developer explicitly asks for a worktree.
+0. **Workspace isolation** — In auto mode, always invoke `superpowers:using-git-worktrees` before writing the first test — agents run unattended and isolation is non-negotiable. In collaborative mode, `picking-up-task` will have already set up the branch or worktree; skip this step unless the developer explicitly asks for a worktree.
 1. **Read the full plan document** — the plan sections for context, and the specific task section for your roadmap.
 1a. **Confirm the plan cleared `reviewing-plan`.** Check the plan file for a line beginning with `> **Plan Review:** PROCEED`.
    This matches both `PROCEED` and `PROCEED WITH CHANGES` verdicts. DO NOT start if the only verdict line is `> **Plan Review:** DO NOT PROCEED`. If no verdict marker exists:
