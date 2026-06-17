@@ -15,25 +15,31 @@ flowchart TD
     classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
 
-    ST(["picking-up-task\nJira URL / key / local file  →  branch + ticket file"]):::sp
-    PFT["planning-from-ticket\nticket file  →  PLAN-KEY.md"]:::pipe
-    GT["generating-tasks\nPLAN-KEY.md  →  Tasks section appended"]:::pipe
-    RP{"reviewing-plan\nAI-as-judge · fresh context · strong model"}:::judge
-    RPR["receiving-plan-review\nverify findings · fix plan"]:::pipe
-    IT["implementing-tasks\nTDD · auto-selects pytest or vitest\nrequires PROCEED marker · mid-task self-review"]:::pipe
-    RC{"reviewing-code\nAI-as-judge · fresh context · strong model"}:::judge
-    RCR["superpowers:receiving-code-review\nverify findings · fix code"]:::sp
-    CC(["crafting-commits\nconventional commits · human-gated"]):::sp
+    ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
+    PFT["② read the codebase\nwrite an implementation plan\n/planning-from-ticket"]:::pipe
+    GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
+    HG1{{"✋ you approve the tasks\nor ask to revise them"}}:::gate
+    RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
+    RPR["challenge or accept each finding\nupdate the plan\n/receiving-plan-review"]:::pipe
+    HG2{{"✋ you approve the plan\nor ask to revise it"}}:::gate
+    IT["⑤ write tests first, then code\ntask by task\n/implementing-tasks"]:::pipe
+    RC{"⑥ AI reviews the code\nindependent of who wrote it\n/reviewing-code"}:::judge
+    RCR["challenge or accept each finding\nfix the code\nsuperpowers:receiving-code-review"]:::sp
+    HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
+    CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
 
-    ST --> PFT --> GT --> RP
-    RP -->|PROCEED| IT
+    ST --> PFT --> GT --> HG1 --> RP
+    RP -->|PROCEED| HG2
     RP -->|DO NOT PROCEED| RPR
     RPR --> RP
-    IT --> RC
-    RC -->|PASS| CC
+    HG2 --> IT
+    IT -->|all tasks done| RC
+    RC -->|PASS| HG3
     RC -->|FAIL| RCR
     RCR --> RC
+    HG3 --> CC
 ```
 
 
