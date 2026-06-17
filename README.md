@@ -42,7 +42,17 @@ cd coding-agent-skills
 ./install.sh
 ```
 
-`install.sh` symlinks all skills into `~/.claude/skills/`. Safe to re-run: existing symlinks are updated, real directories are never overwritten.
+The script prompts you to choose a scope:
+
+| Scope | Target | When to use |
+|---|---|---|
+| User (default) | `~/.claude/skills/` | Available in all projects |
+| Project | `.claude/skills/` in current directory | Current project only |
+| Both | Both of the above | |
+
+To skip the prompt, pass `--scope=user`, `--scope=project`, or `--scope=both`.
+
+Safe to re-run: existing symlinks are updated, real directories are never overwritten.
 
 ## Quickstart
 

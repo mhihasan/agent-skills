@@ -4,11 +4,13 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$REPO_DIR/skills"
 
-# ── SKILLS ──────────────────────────────────────────────────────────────────
+# ── HELPERS ───────────────────────────────────────────────────────────────────
 
 link_skills() {
   local target_dir="$1"
   local linked=0 skipped=0
+
+  mkdir -p "$target_dir"
 
   for skill in "$SKILLS_SRC"/*/; do
     [ -d "$skill" ] || continue
@@ -20,7 +22,7 @@ link_skills() {
       skipped=$((skipped + 1))
     else
       ln -sfn "$skill" "$dest"
-      echo "  LINKED: $dest -> $skill"
+      echo "  LINKED: $dest"
       linked=$((linked + 1))
     fi
   done
@@ -28,20 +30,54 @@ link_skills() {
   echo "  → $linked linked, $skipped skipped"
 }
 
+# ── SCOPE SELECTION ───────────────────────────────────────────────────────────
+
+# Accept --scope user|project as an argument, otherwise prompt
+SCOPE=""
+for arg in "$@"; do
+  case "$arg" in
+    --scope=user)    SCOPE="user" ;;
+    --scope=project) SCOPE="project" ;;
+    --scope=both)    SCOPE="both" ;;
+  esac
+done
+
 echo ""
 echo "agentic-skills install.sh"
 echo "──────────────────────────────────────────────────────"
 
-# Claude Code — and all tools that share ~/.claude/skills/ (OpenCode, Cursor, etc.)
-[ -d "$HOME/.claude/skills" ] \
-  && { echo "[~/.claude/skills]"; link_skills "$HOME/.claude/skills"; } \
-  || echo "[~/.claude/skills] not found — skipping"
+if [ -z "$SCOPE" ]; then
+  echo ""
+  echo "Where do you want to install the skills?"
+  echo "  1) User scope   — ~/.claude/skills/  (available in all projects)"
+  echo "  2) Project scope — .claude/skills/   (current directory only)"
+  echo "  3) Both"
+  echo ""
+  read -r -p "Choice [1/2/3] (default: 1): " choice
+  case "${choice:-1}" in
+    2) SCOPE="project" ;;
+    3) SCOPE="both" ;;
+    *) SCOPE="user" ;;
+  esac
+fi
 
-# ── COMMANDS  (add later) ────────────────────────────────────────────────────
-# ── RULES     (add later) ────────────────────────────────────────────────────
-# ── SUBAGENTS (add later) ────────────────────────────────────────────────────
+# ── INSTALL ───────────────────────────────────────────────────────────────────
 
-# ── DEPENDENCY CHECK ─────────────────────────────────────────────────────────
+if [ "$SCOPE" = "user" ] || [ "$SCOPE" = "both" ]; then
+  USER_SKILLS="$HOME/.claude/skills"
+  echo ""
+  echo "[user scope] $USER_SKILLS"
+  link_skills "$USER_SKILLS"
+fi
+
+if [ "$SCOPE" = "project" ] || [ "$SCOPE" = "both" ]; then
+  PROJECT_SKILLS="$(pwd)/.claude/skills"
+  echo ""
+  echo "[project scope] $PROJECT_SKILLS"
+  link_skills "$PROJECT_SKILLS"
+fi
+
+# ── DEPENDENCY CHECK ──────────────────────────────────────────────────────────
 
 SUPERPOWERS_DIR="$HOME/.claude/plugins/cache/claude-plugins-official/superpowers"
 if [ ! -d "$SUPERPOWERS_DIR" ]; then
