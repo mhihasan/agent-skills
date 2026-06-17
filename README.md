@@ -25,7 +25,7 @@ flowchart TD
     IT["[5] implementing-tasks\nTDD · pytest-expert / vitest-react\n↺ mid-task review gate"]:::pipe
     RC["[6] reviewing-code\nAI-as-judge · fresh-context · strong model"]:::judge
     CC["[6.5] crafting-commits\nclean history · human-gated"]:::pipe
-    FDB(["[7] finishing-a-development-branch\nprint merge/PR commands"]):::sp
+    FDB(["[7] finishing-a-development-branch\nverify tests · merge or push PR · cleanup"]):::sp
 
     ST --> PFT --> GT --> RP
     RP -->|PROCEED| GATE
@@ -34,7 +34,7 @@ flowchart TD
     GATE -.->|"missing — halt"| RP
     IT --> RC
     RC -->|PASS| CC --> FDB
-    RC -.->|"FAIL — fix code"| IT
+    RC -.->|"FAIL — receiving-code-review"| IT
 ```
 
 > 🔵 pipeline steps · 🟡 AI-as-judge · 🟢 superpowers steps · dotted = fix & retry
