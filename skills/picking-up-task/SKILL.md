@@ -3,9 +3,10 @@ name: picking-up-task
 description: Use when the user wants to start a new task — accepts a Jira ticket URL, Jira key, or local ticket file path. Triggers on "start task", "begin PROJ-42", "set up a branch for", "start working on PROJ-42".
 model: inherit
 color: cyan
+license: MIT
 ---
 
-# Start Task
+# picking-up-task
 
 Bootstrap a new task: fetch the ticket (if remote) and set up a clean branch — so you can jump straight into planning.
 
@@ -86,9 +87,10 @@ cat .claude/artifacts-root 2>/dev/null
 
 Check whether `local-dev` is already in the global gitignore:
 ```bash
-grep -q 'local-dev' "$(git config --global core.excludesfile 2>/dev/null || echo ~/.gitignore_global)" 2>/dev/null \
+GITIGNORE_FILE="$(git config --global core.excludesfile 2>/dev/null || echo ~/.gitignore_global)"
+grep -q 'local-dev' "$GITIGNORE_FILE" 2>/dev/null \
   && echo "already excluded" \
-  || echo "local-dev/" >> "${$(git config --global core.excludesfile):-~/.gitignore_global}"
+  || echo "local-dev/" >> "$GITIGNORE_FILE"
 ```
 If the global excludes file does not exist yet, create it:
 ```bash
