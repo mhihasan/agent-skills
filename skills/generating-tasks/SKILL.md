@@ -57,6 +57,19 @@ Check the arguments for `auto`; **collaborative is the default.**
 
 A natural progression — not a rigid pipeline. Let the conversation go where it needs to.
 
+### 0. Preflight — check upstream gate
+
+Before reading the plan, locate `REVIEW-LOG.md` in the same directory as the plan file and check for a `planning-from-ticket` stamp:
+
+```bash
+grep "Human Review:.*planning-from-ticket" <plan-dir>/REVIEW-LOG.md
+```
+
+- **Line absent (or file missing):** halt immediately with:
+  > "This step requires a human review stamp from `planning-from-ticket`. Run `/planning-from-ticket` first and approve the plan before generating tasks."
+- **Line present with `AUTO`:** note — "Note: upstream `planning-from-ticket` was AI-conducted in auto mode" — then continue.
+- **Line present with `APPROVED`:** proceed normally.
+
 ### 1. Understand the plan
 
 Read the plan, read CLAUDE.md if present, and scan the relevant source/test files. Come back to the developer with:
@@ -101,6 +114,22 @@ job, not this self-review's — don't self-adjudicate it here.
 ### 4. Append to the plan file
 
 Once confirmed, **append the task spec(s)** to the end of the plan file after a clear `---` separator. The plan's existing content stays untouched above.
+
+After appending, open the Review Gate.
+
+**Collaborative mode (default):** The task spec was already presented and agreed in step 3 — that agreement is the gate. Write (or upsert) this line in `<plan-dir>/REVIEW-LOG.md`:
+
+```
+> **Human Review:** APPROVED — YYYY-MM-DD — generating-tasks
+```
+
+Then tell the developer: `Tasks appended. Next: /reviewing-plan <plan-file>`
+
+**Auto mode:** Write the stamp automatically with `AUTO`:
+
+```
+> **Human Review:** AUTO — YYYY-MM-DD — generating-tasks
+```
 
 ## Output Format
 
