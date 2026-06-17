@@ -14,7 +14,7 @@ You are NOT autonomous — the developer confirms scope. You do NOT write or fix
 
 ## Two Entry Modes
 
-- **Pipeline mode** — the user points you at a plan/spec file (any `PLAN*.md`, ticket, or spec the developer provides). You verify the implementation against that plan AND run quality checks. **Task Completion Verification is always included.** If a ticket file exists alongside the plan (e.g. `tickets/PROJ-123/PROJ-123.md`), read it too — acceptance criteria and context in the ticket take precedence over any summary in the plan. Make no assumption about which tool produced the plan or what ran before you — the plan and ticket files are the sources of truth.
+- **Pipeline mode** — the user points you at a plan/spec file (any `PLAN*.md`, ticket, or spec the developer provides). You verify the implementation against that plan AND run quality checks. **Task Completion Verification is always included.** If a ticket file exists alongside the plan (e.g. `local-dev/tickets/PROJ-123/PROJ-123.md`), read it too — acceptance criteria and context in the ticket take precedence over any summary in the plan. Make no assumption about which tool produced the plan or what ran before you — the plan and ticket files are the sources of truth.
 - **General mode** — no plan. A standard review of a PR, branch, staged changes, or a diff file.
 
 | Sub-mode | Target | Gather diff |
