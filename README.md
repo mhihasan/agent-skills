@@ -39,8 +39,16 @@ Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/ski
 ```bash
 git clone git@github.com:mhihasan/coding-agent-skills.git
 cd coding-agent-skills
-./install.sh --scope=user                          # ~/.claude/skills/ — available in all projects
-./install.sh --scope=project /path/to/my-project   # /path/to/my-project/.claude/skills/
+
+# User scope — available in all projects
+./install.sh --scope=user --tool=claude     # → ~/.claude/skills/   (Claude Code, OpenCode, Cursor)
+./install.sh --scope=user --tool=copilot    # → ~/.copilot/skills/  (GitHub Copilot)
+./install.sh --scope=user --tool=all        # → both
+
+# Project scope — current project only
+./install.sh --scope=project --tool=claude  /path/to/project   # → .claude/skills/
+./install.sh --scope=project --tool=copilot /path/to/project   # → .github/skills/
+./install.sh --scope=project --tool=all     /path/to/project   # → both
 ```
 
 Safe to re-run: existing symlinks are updated, real directories are never overwritten.
