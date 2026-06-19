@@ -231,6 +231,14 @@ On developer confirmation (`approve` or equivalent explicit go-ahead), before ru
 
 **Auto mode:** Step 5 still halts for the developer — `auto` does not relax the git gate (as documented in the skill header). Write the stamp when the developer confirms, same as collaborative.
 
+Then delete `.agentic-sdlc/active/<KEY>.md` if it exists — the work item is complete:
+
+```bash
+rm -f .agentic-sdlc/active/<KEY>.md
+```
+
+Replace `<KEY>` with the actual ticket key (or idea slug). If the file does not exist, skip silently.
+
 **Do not run any git reset or commit commands until the user explicitly confirms.**
 
 ---
