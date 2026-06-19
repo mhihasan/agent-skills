@@ -7,6 +7,15 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd)" || here=""
 IS_LOCAL=false
 [ -n "$here" ] && [ -d "$here/skills" ] && IS_LOCAL=true
 
+# ── INFINITE RE-EXEC GUARD ────────────────────────────────────────────────────
+# If we were already re-exec'd from a remote clone and skills/ is still absent,
+# the clone is incomplete. Abort instead of looping forever.
+if [ "${AGENTIC_SDLC_REMOTE:-}" = "1" ] && [ "$IS_LOCAL" = false ]; then
+  echo "agentic-sdlc: install failed — cloned repo at $HOME/.agentic-sdlc is missing the skills/ directory." >&2
+  echo "  Fix: rm -rf $HOME/.agentic-sdlc and retry." >&2
+  exit 1
+fi
+
 if [ "$IS_LOCAL" = false ]; then
   # ── REMOTE MODE: clone/pull, then re-exec local copy ──────────────────────
   if ! command -v git >/dev/null 2>&1; then
@@ -29,6 +38,7 @@ if [ "$IS_LOCAL" = false ]; then
     set -- --scope=user --tool=all
   fi
 
+  export AGENTIC_SDLC_REMOTE=1
   exec bash "$CLONE_DIR/install.sh" "$@"
 fi
 
@@ -75,6 +85,7 @@ for arg in "$@"; do
     --tool=claude)   TOOL="claude" ;;
     --tool=copilot)  TOOL="copilot" ;;
     --tool=all)      TOOL="all" ;;
+    --*)             echo "Unknown option: $arg" >&2; exit 1 ;;
     /*)              PROJECT_PATH="$arg" ;;
     *)               PROJECT_PATH="$(pwd)/$arg" ;;
   esac
