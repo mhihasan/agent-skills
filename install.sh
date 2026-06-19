@@ -1,6 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# ── MODE DETECTION ────────────────────────────────────────────────────────────
+# BASH_SOURCE is unset when piped from curl — use that to detect remote mode.
+here="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd)" || here=""
+IS_LOCAL=false
+[ -n "$here" ] && [ -d "$here/skills" ] && IS_LOCAL=true
+
+if [ "$IS_LOCAL" = false ]; then
+  # ── REMOTE MODE: clone/pull, then re-exec local copy ──────────────────────
+  if ! command -v git >/dev/null 2>&1; then
+    echo "agentic-sdlc: git required. Install git and retry." >&2
+    exit 1
+  fi
+
+  CLONE_DIR="$HOME/.agentic-sdlc"
+
+  if [ -d "$CLONE_DIR/.git" ]; then
+    echo "Updating agentic-sdlc in $CLONE_DIR ..."
+    git -C "$CLONE_DIR" pull --ff-only
+  else
+    echo "Cloning agentic-sdlc to $CLONE_DIR ..."
+    git clone https://github.com/mhihasan/agentic-sdlc "$CLONE_DIR"
+  fi
+
+  # Apply default args if none given
+  if [ "$#" -eq 0 ]; then
+    set -- --scope=user --tool=all
+  fi
+
+  exec bash "$CLONE_DIR/install.sh" "$@"
+fi
+
+# ── LOCAL MODE ────────────────────────────────────────────────────────────────
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$REPO_DIR/skills"
 
@@ -49,7 +81,7 @@ for arg in "$@"; do
 done
 
 echo ""
-echo "agentic-skills install.sh"
+echo "agentic-sdlc install.sh"
 echo "──────────────────────────────────────────────────────"
 
 # ── VALIDATION ────────────────────────────────────────────────────────────────
@@ -135,8 +167,10 @@ if [ ! -d "$SUPERPOWERS_DIR" ]; then
 fi
 
 echo ""
-echo "Note: agentic-skills contains engineering craft skills only."
-echo "For personal skills (voice, career, interview prep), also install:"
+echo "Note: agentic-sdlc is the SDLC pipeline only."
+echo "For software craft skills (DDD, clean architecture, design patterns), also install:"
+echo "  https://github.com/mhihasan/swe-skills"
+echo "For personal skills (career, interview prep), also install:"
 echo "  https://github.com/mhihasan/exocortex"
 echo ""
 echo "Done."
