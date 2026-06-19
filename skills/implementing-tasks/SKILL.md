@@ -21,7 +21,7 @@ You are NOT an autonomous coding agent. The developer is always present and driv
 Before writing any test, detect the project type and invoke the matching testing skill via the Skill tool. This is mandatory, not optional — the chosen skill defines how every test in this session is written.
 
 | Project type | Signal | Invoke |
-|---|---|---|
+| --- | --- | --- |
 | Python | `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements*.txt`, or `*.py` sources with a pytest config | `Skill(testing-pytest)` |
 | React | `package.json` depending on `react` **and** `vitest` (or a `vitest.config.*`) | `Skill(testing-vitest)` |
 | Anything else | No match above (Go, Rust, plain JS, etc.) | No testing skill — fall back to generic TDD |
@@ -138,6 +138,8 @@ When you first receive a task to implement:
      > "This step requires a human review stamp from `reviewing-plan`. Approve the plan review before starting implementation."
    - **AUTO stamp:** note — "Note: upstream `reviewing-plan` was AI-conducted in auto mode" — then continue.
    - **APPROVED stamp:** proceed normally.
+   - **Update active state:** Update `.agentic-sdlc/active/<KEY>.md` — read the file, set `task:` to the current task name verbatim from the plan (e.g. `Task 3 — add toggle component`), write back. If the file does not exist, skip silently.
+
 2. **Read CLAUDE.md** (if it exists) and **scan the relevant source code and test files** mentioned in the task spec to understand current state, patterns, and conventions.
 3. **Detect the project type and invoke the matching testing skill** (see "Testing Skill Selection" above).
 4. **Update the task's status** to `in progress` in the plan document.
@@ -210,7 +212,9 @@ Then continue to the next task.
 
 **After the final task:** ask: > All tasks complete. Ready to proceed? `/reviewing-code branch <plan-file>` (yes/no)
 
-On yes, invoke `/reviewing-code branch <plan-file>`.
+On yes, update `.agentic-sdlc/active/<KEY>.md` — read the file, set `step: reviewing-code`, clear `task:`, write back. If the file does not exist, skip silently.
+
+Then invoke `/reviewing-code branch <plan-file>`.
 
 ## Alternative Execution Engine
 
@@ -243,7 +247,7 @@ This skill never runs `git commit`, `git push`, `git merge`, or opens a PR on it
 ## Common Mistakes
 
 | Mistake | Fix |
-|---|---|
+| --- | --- |
 | Writing tests from memory instead of invoking testing-pytest / testing-vitest | Make the actual `Skill` tool call first; the skill defines the conventions |
 | Forcing pytest/vitest conventions onto an unrelated stack | If no project type matches, use the generic fallback with the project's own framework |
 | Re-detecting the testing skill on every test | Detect once at session start; reuse it |
