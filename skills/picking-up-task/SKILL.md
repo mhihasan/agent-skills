@@ -29,7 +29,7 @@ Bootstrap a new task: fetch the ticket (if remote) and set up a clean branch —
 Accepts one required argument. Detect the source type:
 
 | Input | Example | Action |
-|---|---|---|
+| --- | --- | --- |
 | Jira URL | `https://site.atlassian.net/browse/PROJ-42` | Extract key → invoke `fetching-tickets` skill |
 | Jira key | `PROJ-42` | Invoke `fetching-tickets` skill |
 | Local file | `./$ARTIFACTS_ROOT/PROJ-42/PROJ-42.md` | Read file directly — no fetch |
@@ -59,43 +59,49 @@ After the ticket is on disk (fetched or read from local file), set up the branch
 
 ### 0. Resolve artifacts root
 
-Check for `.claude/artifacts-root` in the project root:
+Check for `.agentic-sdlc/config.md` in the project root:
 
 ```bash
-cat .claude/artifacts-root 2>/dev/null
+cat .agentic-sdlc/config.md 2>/dev/null
 ```
 
-- **If the file exists:** use its value as `ARTIFACTS_ROOT` for all path construction this run (e.g. `local-dev/tickets`).
-- **If the file does not exist:** ask the developer:
+- **If the file exists:** read `artifacts-root:` value. Use it as `ARTIFACTS_ROOT`.
+- **If absent, but `.claude/artifacts-root` exists (migration):** read its value, write `.agentic-sdlc/config.md`:
+
+  ```bash
+  mkdir -p .agentic-sdlc
+  echo "artifacts-root: $(cat .claude/artifacts-root)" > .agentic-sdlc/config.md
+  ```
+
+  Print migration notice:
+  > "Migrated artifacts-root from `.claude/artifacts-root` → `.agentic-sdlc/config.md`. You can delete `.claude/artifacts-root`."
+
+- **If neither exists:** ask the developer:
 
   > "Where should ticket and plan files go? Press Enter for the default.
   > Default: `local-dev/tickets`"
 
-  Write their answer (or the default) to `.claude/artifacts-root`:
+  Write their answer (or the default) to `.agentic-sdlc/config.md`:
 
   ```bash
-  echo "local-dev/tickets" > .claude/artifacts-root   # or their chosen value
+  mkdir -p .agentic-sdlc
+  echo "artifacts-root: local-dev/tickets" > .agentic-sdlc/config.md
   ```
 
-  Then tell them:
-  > "Saved to `.claude/artifacts-root`. Commit this file to share the setting with your team, or add it to `.gitignore` to keep it local:
-  > ```bash
-  > echo '.claude/artifacts-root' >> .gitignore
-  > ```"
+**Gitignore (one-time):** Ensure `.agentic-sdlc/` is excluded from git:
 
-**One-time setup (first run only):** Ensure `local-dev/` is excluded from git globally so ticket and plan files are never accidentally committed to any project.
+```bash
+grep -q '\.agentic-sdlc' .gitignore 2>/dev/null \
+  || echo '.agentic-sdlc/' >> .gitignore
+```
 
-Check whether `local-dev` is already in the global gitignore:
+**Global gitignore for `local-dev/`** (unchanged — keep existing logic):
+
 ```bash
 GITIGNORE_FILE="$(git config --global core.excludesfile 2>/dev/null || echo ~/.gitignore_global)"
 grep -q 'local-dev' "$GITIGNORE_FILE" 2>/dev/null \
   && echo "already excluded" \
   || echo "local-dev/" >> "$GITIGNORE_FILE"
-```
-If the global excludes file does not exist yet, create it:
-```bash
-echo "local-dev/" >> ~/.gitignore_global
-git config --global core.excludesfile ~/.gitignore_global
 ```
 
 ### 1. Detect base branch
@@ -137,7 +143,7 @@ Examples: `feat/PROJ-42/add-user-auth`, `fix/PROJ-55/null-pointer-payment`
 **Derive type from Jira issue type:**
 
 | Jira issue type | Branch type |
-|---|---|
+| --- | --- |
 | Bug | `fix` |
 | Story, Task, Feature | `feat` |
 | Sub-task | Inherit parent type, or ask |
@@ -192,7 +198,21 @@ Type `approve` to stamp it and proceed, or describe what needs fixing.
    ```
    > **Human Review:** APPROVED — YYYY-MM-DD — picking-up-task
    ```
-2. Ask:
+
+2. Write `.agentic-sdlc/active/PROJ-42.md` (create or overwrite):
+
+   ```
+   key: PROJ-42
+   step: planning-from-spec
+   task:
+   branch: feat/PROJ-42/add-dark-mode
+   ticket: $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md
+   plan:
+   ```
+
+   Replace `PROJ-42` with the actual ticket key and `feat/PROJ-42/add-dark-mode` with the actual branch name.
+
+3. Ask:
    > Ready to proceed? `/planning-from-spec $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md` (yes/no)
 
    On yes, invoke `/planning-from-spec <ticket-file>`.
@@ -218,7 +238,7 @@ No push commands. No extra guidance beyond the next-step prompt.
 ## Common Mistakes
 
 | Mistake | Fix |
-|---|---|
+| --- | --- |
 | Fetching the ticket and stopping — no branch created | Branch creation is mandatory. Always complete workspace setup. |
 | Accepting "add password reset" as input | Reject immediately with the exact wording above. No creative workarounds. |
 | Calling `mcp__claude_ai_Atlassian__getJiraIssue` directly | Invoke `fetching-tickets` skill instead. |
