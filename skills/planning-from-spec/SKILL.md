@@ -114,6 +114,19 @@ After writing the plan file, open the Review Gate.
 > **Human Review:** APPROVED — YYYY-MM-DD — planning-from-spec
 ```
 
+Then update `.agentic-sdlc/active/<KEY>.md` — read the file, set `step: generating-tasks` and `plan: <ticket-dir>/PLAN-<KEY>.md`, write back:
+
+```
+key: PROJ-42
+step: generating-tasks
+task:
+branch: feat/PROJ-42/add-dark-mode
+ticket: local-dev/tickets/PROJ-42/PROJ-42.md
+plan: local-dev/tickets/PROJ-42/PLAN-PROJ-42.md
+```
+
+If `.agentic-sdlc/active/<KEY>.md` does not exist (skill invoked directly, not via `/sdlc-start`), skip silently — active state tracking is optional.
+
 Then ask: > Ready to proceed? `/generating-tasks <path>` (yes/no)
 
 On yes, invoke `/generating-tasks <path>`.
