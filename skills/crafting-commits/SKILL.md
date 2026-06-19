@@ -229,7 +229,9 @@ Skip the assessment table. Go straight to designing the commit plan from the dif
 **All existing commits are clean:**
 Show the assessment table with all keep verdicts. Since no rewrite is needed, skip Steps 5–6 (no execution script to run). Say:
 
-> "All commits are already clean — no rewrite needed. Run `superpowers:finishing-a-development-branch` when you're ready to merge, open a PR, or discard the branch. If opening a PR, always create it as a draft (`gh pr create --draft`)."
+> "All commits are already clean — no rewrite needed. Ready to proceed? `/superpowers:finishing-a-development-branch` (yes/no)"
+
+On yes, invoke `superpowers:finishing-a-development-branch`.
 
 Do not write a `REVIEW-LOG.md` stamp — there is nothing to approve.
 
