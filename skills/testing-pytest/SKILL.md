@@ -1,13 +1,7 @@
 ---
 name: testing-pytest
 description: >
-  Use when writing, reviewing, or improving Python tests with pytest. Triggers
-  on "write tests for this", "review my tests", "is this test good?", "how
-  should I test X", "generate a test suite", "my test is flaky", "help me test
-  this function/class/module", or any time Python code is shown and test
-  coverage is the intent. Also triggers when a pytest file is shown and the
-  user asks for feedback, improvements, or a rewrite. Do not wait for the user
-  to say "pytest" explicitly — trigger whenever testing Python code is the intent.
+  Use when writing, reviewing, or improving Python tests with pytest. Triggers on "write tests for this", "review my tests", "is this test good?", "my test is flaky", "help me test this function/class/module", or any time Python code is shown and test coverage is the intent.
 model: inherit
 color: lightcyan
 license: MIT

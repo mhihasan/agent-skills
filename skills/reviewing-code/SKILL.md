@@ -1,6 +1,6 @@
 ---
 name: reviewing-code
-description: "Use when the user wants to review and verify implemented code before considering it done or opening a PR. Triggers on 'review this PR', 'review my branch', 'review staged changes', 'verify the implementation against the plan'. Read-only — does not write or fix code."
+description: "Use when the user wants to review and verify implemented code before considering it done or opening a PR. Triggers on 'review this PR', 'review my branch', 'review staged changes', 'verify the implementation against the plan'."
 license: MIT
 model: claude-opus-4-8  # Claude Code only; other tools use their session model
 color: lightsalmon
@@ -27,7 +27,7 @@ You are NOT autonomous — the developer confirms scope. You do NOT write or fix
 
 ## Workflow
 
-Create a TodoWrite item per step.
+Create a task per step.
 
 ### 1. Preflight
 

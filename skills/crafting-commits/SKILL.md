@@ -1,7 +1,7 @@
 ---
 name: crafting-commits
 description: >
-  Use when the user wants to clean up commits, rewrite git history, apply conventional commits, squash messy commits, prepare a branch for PR review, or says things like "clean up my commits", "fix my commit history", "rewrite commits", "prepare commits for PR", "conventional commits", "squash and rewrite", "tidy my branch", or "commits are a mess". Also trigger when a user shares a diff or branch and asks how to structure commits for a reviewer.
+  Use when the user wants to clean up commits, rewrite git history, squash messy commits, apply conventional commits, or prepare a branch for PR review. Triggers on "clean up my commits", "fix my commit history", "prepare commits for PR", "commits are a mess", or when a user shares a diff or branch and asks how to structure commits for a reviewer.
 model: claude-haiku-4-5  # Claude Code only; other tools use their session model
 color: lavender
 license: MIT
@@ -61,6 +61,24 @@ git diff <merge_base>..HEAD --name-only
 ```
 
 If the user hasn't provided a target branch, ask for it before proceeding.
+
+---
+
+### Step 1.5 — Rebase onto target branch
+
+Before evaluating commits, rebase onto `origin/<target_branch>` so the commit history reflects the final state against an up-to-date base:
+
+```bash
+git rebase origin/<target_branch>
+```
+
+**If rebase conflicts:** Stop immediately. Report the conflicting files and say:
+
+> "Rebase conflict on `<file>`. Resolve the conflict, run `git rebase --continue`, then re-run `/crafting-commits`."
+
+Do not proceed past a rebase conflict — commit evaluation on a partial rebase is meaningless.
+
+**If rebase succeeds:** Re-run the diff and log commands from Step 1 to get the updated merge base and commit list before proceeding.
 
 ---
 
@@ -227,7 +245,13 @@ After successful execution, say:
 Skip the assessment table. Go straight to designing the commit plan from the diff.
 
 **All existing commits are clean:**
-Still present the plan in chat. Show the assessment table with all keep verdicts, confirm the sequence looks right, and offer to either proceed as-is or re-evaluate if the user wants different groupings.
+Show the assessment table with all keep verdicts. Since no rewrite is needed, skip Steps 5–6 (no execution script to run). Say:
+
+> "All commits are already clean — no rewrite needed. Ready to proceed? `/superpowers:finishing-a-development-branch` (yes/no)"
+
+On yes, invoke `superpowers:finishing-a-development-branch`.
+
+Do not write a `REVIEW-LOG.md` stamp — there is nothing to approve.
 
 **Merge commits in the range:**
 Note them in the assessment. Do not include merge commits in the rewritten history — the clean sequence should be linear.

@@ -189,10 +189,4 @@ if [ ! -d "$SUPERPOWERS_DIR" ]; then
 fi
 
 echo ""
-echo "Note: agentic-sdlc is the SDLC pipeline only."
-echo "For software craft skills (DDD, clean architecture, design patterns), also install:"
-echo "  https://github.com/mhihasan/swe-skills"
-echo "For personal skills (career, interview prep), also install:"
-echo "  https://github.com/mhihasan/exocortex"
-echo ""
 echo "Done."

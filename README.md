@@ -53,7 +53,7 @@ Safe to re-run: existing symlinks are updated, real directories are never overwr
 Each skill tells you what to run next. Full sequence:
 
 ```
-/planning-from-spec → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
+/picking-up-task → /planning-from-spec → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
 ```
 
 Enter at any step if the upstream artifact already exists.
