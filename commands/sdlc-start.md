@@ -147,6 +147,10 @@ continues with:
 /generating-tasks <plan-file>
 ```
 
+## Reference
+
+Full usage guide, mode details, and active state schema: [`references/sdlc-start-usage.md`](references/sdlc-start-usage.md)
+
 ## You Must NOT
 
 - Duplicate ticket-fetching, branch-creation, or brainstorming logic — delegate entirely

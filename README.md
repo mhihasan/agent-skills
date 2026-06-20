@@ -27,22 +27,7 @@ Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 /sdlc-start
 ```
 
-`/sdlc-start` detects the input type and routes to the right entry point. With no argument it checks for in-progress work and offers to resume.
-
-Routes by input type:
-
-```
-# ticket / URL / Jira key
-/picking-up-task → /planning-from-spec → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
-
-# free-form idea
-brainstorming → /planning-from-spec → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
-
-# no argument — resume in-progress work
-reads .agentic-sdlc/active/ → continues at saved step
-```
-
-Enter at any step if the upstream artifact already exists.
+Detects input type and routes automatically. No argument resumes in-progress work. Enter at any step if the upstream artifact already exists.
 
 ---
 
