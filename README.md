@@ -29,6 +29,8 @@ Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 
 Detects input type and routes automatically. No argument resumes in-progress work. Enter at any step if the upstream artifact already exists.
 
+→ [Full usage: modes, routing rules, resume logic, active state](commands/references/sdlc-start-usage.md)
+
 ---
 
 **Review any branch right now:**
