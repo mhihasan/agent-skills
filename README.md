@@ -43,6 +43,8 @@ Reviews your staged diff by default, or pass `branch`, a PR number, or a diff fi
 
 ## Agentic Workflow
 
+![Pipeline simulator](docs/sdlc-start-ticket.gif)
+
 [![Pipeline flow — click to open interactive simulator](docs/pipeline-flow.svg)](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html)
 
 ▶ [Open interactive simulator](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html) — type a ticket, URL, or idea and watch it route live.
