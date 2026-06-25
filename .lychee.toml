@@ -10,9 +10,14 @@ exclude = [
   "http://localhost",
   "https://example\\.com",
   "https://grafana\\.internal",
+  "https://brightcart\\.atlassian\\.net",
 ]
 
-exclude_path = ["local-dev"]
+exclude_path = [
+  "local-dev",
+  "evals/fixtures",      # fictional BrightCart data — brightcart.atlassian.net returns 404
+  "docs/SKILL-BEST-PRACTICES.md",  # root-relative /docs/en/ links from external source
+]
 
 # GitHub rate-limits unauthenticated requests — accept 429 as non-failure
 accept = [429]
