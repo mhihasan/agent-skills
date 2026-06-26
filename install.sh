@@ -26,6 +26,16 @@ if [ "$IS_LOCAL" = false ]; then
     exit 1
   fi
 
+  # Extract --tag=<value> before passing remaining args to local re-exec
+  TAG=""
+  PASSTHROUGH_ARGS=()
+  for arg in "$@"; do
+    case "$arg" in
+      --tag=*) TAG="${arg#--tag=}" ;;
+      *)       PASSTHROUGH_ARGS+=("$arg") ;;
+    esac
+  done
+
   CLONE_DIR="$HOME/.agentic-sdlc"
 
   if [ -d "$CLONE_DIR" ] && [ ! -d "$CLONE_DIR/.git" ]; then
@@ -33,24 +43,36 @@ if [ "$IS_LOCAL" = false ]; then
     echo "  Fix: rm -rf $CLONE_DIR and retry." >&2
     exit 1
   elif [ -d "$CLONE_DIR/.git" ]; then
-    echo "Updating agentic-sdlc in $CLONE_DIR ..."
-    if ! git -C "$CLONE_DIR" pull --ff-only; then
-      echo "agentic-sdlc: update failed — local clone may have diverged." >&2
-      echo "  Fix: rm -rf $CLONE_DIR and retry." >&2
-      exit 1
+    if [ -n "$TAG" ]; then
+      echo "Fetching tags in $CLONE_DIR ..."
+      git -C "$CLONE_DIR" fetch --tags
+      echo "Checking out tag $TAG ..."
+      git -C "$CLONE_DIR" checkout "$TAG" || { echo "agentic-sdlc: tag '$TAG' not found." >&2; exit 1; }
+    else
+      echo "Updating agentic-sdlc in $CLONE_DIR ..."
+      if ! git -C "$CLONE_DIR" pull --ff-only; then
+        echo "agentic-sdlc: update failed — local clone may have diverged." >&2
+        echo "  Fix: rm -rf $CLONE_DIR and retry." >&2
+        exit 1
+      fi
     fi
   else
-    echo "Cloning agentic-sdlc to $CLONE_DIR ..."
-    git clone https://github.com/mhihasan/agentic-sdlc "$CLONE_DIR" || { rm -rf "$CLONE_DIR"; exit 1; }
+    if [ -n "$TAG" ]; then
+      echo "Cloning agentic-sdlc (tag $TAG) to $CLONE_DIR ..."
+      git clone --branch "$TAG" --depth 1 https://github.com/mhihasan/agentic-sdlc "$CLONE_DIR" || { rm -rf "$CLONE_DIR"; exit 1; }
+    else
+      echo "Cloning agentic-sdlc to $CLONE_DIR ..."
+      git clone https://github.com/mhihasan/agentic-sdlc "$CLONE_DIR" || { rm -rf "$CLONE_DIR"; exit 1; }
+    fi
   fi
 
   # Apply default args if none given
-  if [ "$#" -eq 0 ]; then
-    set -- --scope=user --tool=all
+  if [ "${#PASSTHROUGH_ARGS[@]}" -eq 0 ]; then
+    PASSTHROUGH_ARGS=(--scope=user --tool=all)
   fi
 
   export AGENTIC_SDLC_REMOTE=1
-  exec bash "$CLONE_DIR/install.sh" "$@"
+  exec bash "$CLONE_DIR/install.sh" "${PASSTHROUGH_ARGS[@]}"
 fi
 
 # ── LOCAL MODE ────────────────────────────────────────────────────────────────
@@ -154,6 +176,7 @@ for arg in "$@"; do
     --tool=opencode) TOOL="opencode" ;;
     --tool=copilot)  TOOL="copilot" ;;
     --tool=all)      TOOL="all" ;;
+    --tag=*)         ;; # consumed in remote mode; ignored in local mode
     --*)             echo "Unknown option: $arg" >&2; exit 1 ;;
     /*)              PROJECT_PATH="$arg" ;;
     *)               PROJECT_PATH="$(pwd)/$arg" ;;
@@ -169,8 +192,8 @@ echo "────────────────────────�
 if [ -z "$SCOPE" ] || [ -z "$TOOL" ]; then
   echo ""
   echo "Usage:"
-  echo "  ./install.sh --scope=user    --tool=claude|copilot|all"
-  echo "  ./install.sh --scope=project --tool=claude|copilot|all  /path/to/your-project"
+  echo "  ./install.sh [--tag=<tag>] --scope=user    --tool=claude|copilot|all"
+  echo "  ./install.sh [--tag=<tag>] --scope=project --tool=claude|copilot|all  /path/to/your-project"
   echo ""
   echo "  --tool=claude    Claude Code, Cursor          (~/.claude/skills/ + commands/ or .claude/skills/ + commands/)"
   echo "  --tool=opencode  OpenCode                    (~/.config/opencode/skills/ + commands/ or .opencode/skills/ + commands/)"

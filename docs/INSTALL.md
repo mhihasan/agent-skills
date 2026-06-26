@@ -1,9 +1,15 @@
 # Install Options
 
-Default (no args) installs for all tools at user scope:
+Default (no args) installs the latest version for all tools at user scope:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash
+```
+
+Pin to a specific release tag:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash -s -- --tag=v1.2.3
 ```
 
 ---
