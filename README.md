@@ -112,8 +112,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) — skill format, evals, and PR guideline
 
 ## Pair with
 
-For software craft skills (DDD, clean architecture, design patterns, system design):
-[mhihasan/swe-agent-skills](https://github.com/mhihasan/swe-agent-skills)
+| Skill set | Required | Why |
+| --- | --- | --- |
+| [Superpowers skills](https://github.com/obra/superpowers) | Optional — recommended | `/implementing-tasks` composes them when available: TDD cycle, systematic debugging, parallel agents, verification gates, code review. Falls back to built-in judgment without them. |
+| [mhihasan/swe-agent-skills](https://github.com/mhihasan/swe-agent-skills) | Optional | Software craft skills: DDD, clean architecture, design patterns, system design. |
+
+Install superpowers → [github.com/obra/superpowers](https://github.com/obra/superpowers)
+
+Install swe-agent-skills:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mhihasan/swe-agent-skills/main/install.sh | bash

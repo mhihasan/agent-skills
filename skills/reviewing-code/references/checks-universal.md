@@ -9,11 +9,13 @@ Each check lists Purpose, Focus areas, and When to skip. Findings use the shared
 
 **Pipeline mode only. Always included in pipeline mode** (skip only if the developer explicitly wants quality-only).
 
-**Purpose:** Trace every requirement from the plan → task spec → implementation. "Did we deliver what we promised?"
+**Purpose:** Trace every requirement from the plan → task spec → implementation. "Did we deliver what we promised — and only what we promised?"
 
 **Focus areas:**
 - Every test scenario in the task spec has a corresponding test that exists and passes
-- Every "New"/"Modified" file matches expectations; no "Must NOT modify" file touched; no unexpected files created
+- **Containment (backward check):** every file in the diff appears in the plan's Files Expected (New or Modified). Any file modified that is NOT listed → 🟠 High: "unplanned modification in `<file>`". Downgrade to 🟡 only for trivial mechanical consequences (e.g. auto-generated files); justify the downgrade explicitly.
+- **Completeness (forward check):** every file listed in Files Expected (New or Modified) appears in the diff
+- No file in the Must NOT Modify list is touched
 - Scope boundaries respected; key decisions from the plan followed
 - Anything unverifiable from code → flagged as a manual check
 
@@ -22,7 +24,9 @@ Each check lists Purpose, Focus areas, and When to skip. Findings use the shared
 ## Task Completion
 **Criteria:** [X/Y verified]
 | # | Criterion | Status | Evidence |
-**File Verification:** | Expected | Status | Notes |
+**File Verification:**
+  Containment: | File in diff | In plan? | Severity if not |
+  Completeness: | Expected file | Present in diff? | Notes |
 **Scope:** [✅ Respected | ❌ Violated — why]
 **Plan Decisions:** [✅ Followed | ❌ Deviated — why]
 ```
